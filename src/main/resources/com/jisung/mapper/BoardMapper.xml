@@ -3,11 +3,95 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jisung.mapper.BoardMapper">
-		<insert id="insertSelectKey">
+		<!--prefix : 접두사 -->
+		<!--suffix : 접미사 -->
+		<!-- prefixOverrides : 하위 엘레먼트가 생성한 내용의 맨앞에 해당하는 문자가 있으면 자동으로 지워줌 -->
+		<!--collection : 전달받은 인자값 , getTypeArr을 호출 -->
+	<sql id="criteria">
+	    <trim prefixOverrides="OR" suffix=") AND " prefix="(">
+	        <foreach collection="typeArr" item="type">
+	            <trim prefix="OR">
+	                <choose>
+	                    <when test="type == 'T'.toString()">subject like '%'||#{keyword}||'%' </when>
+	                    <when test="type == 'C'.toString()">content like '%'||#{keyword}||'%' </when>
+	                    <when test="type == 'W'.toString()">writer like '%'||#{keyword}||'%' </when>
+	                </choose>
+	            </trim>
+	        </foreach>
+	    </trim>
+	</sql>
+	
+	<resultMap type="com.jisung.domain.BoardVO" id="boardVO">
+		<id property="boardId" column="boardId" />
+		<result property="subject" column="subject" />
+		<result property="content" column="content" />
+		<result property="writer" column="writer" />
+		<result property="regdate" column="regdate" />
+		<collection property="book" resultMap="bookVO"></collection>
+	</resultMap>
+
+	<resultMap type="com.jisung.domain.BookVO" id="bookVO">
+		<id property="bookId" column="bookid" />
+		<result property="boardId" column="boardid" />
+		<result property="thumbnail" column="thumbnail" />
+		<result property="title" column="title" />
+		<result property="authors" column="authors" />
+		<result property="url" column="url" />
+	</resultMap>
+
+
+	<!-- <select id="list" resultType="com.jisung.domain.BoardVO"> select /*+INDEX_DESC(tbl_board pk_board)*/ * from tbl_board </select> -->
+
+	<select id="get" resultMap="boardVO">
+		SELECT board.boardid , subject , content, writer, regdate , bookId , thumbnail , title, authors ,url
+		FROM tbl_board board
+		LEFT OUTER JOIN tbl_book book
+		ON board.boardid = book.boardid WHERE board.boardid = #{boardId}
+	</select>
+
+	<insert id="insertSelectKey">
 		<selectKey keyProperty="boardId" order="BEFORE" resultType="long">
 			select seq_board.nextval from dual
 		</selectKey>
 
 		insert into tbl_board(boardid,subject,content,writer) values(#{boardId},#{subject},#{content},#{writer})
 	</insert>
+
+	<select id="listWithPaging" resultType="com.jisung.domain.BoardVO">
+		<![CDATA[
+			select boardid,subject,content,writer,regdate
+			from
+				(
+					select /*+INDEX_DESC(tbl_board pk_board) */ rownum rn,boardid,subject,content,writer,regdate
+					from tbl_board
+					where
+		]]>
+		<include refid="criteria"></include>
+		<![CDATA[
+		 
+					rownum <= #{pageNum} * #{amount}
+			)
+				
+			where rn > (#{pageNum}-1)*#{amount}
+		]]>
+	</select>
+
+	<select id="total" resultType="int">
+		<![CDATA[ 
+			select count(*) from tbl_board where 
+		]]>
+		<include refid="criteria"></include>
+		<![CDATA[ 
+			boardid > 0
+		]]>
+	</select>
+	
+	<update id="update">
+		update tbl_board set subject = #{subject}, content = #{content}, writer = #{writer} where boardid = #{boardId}
+	</update>
+	
+	<delete id="delete">
+		delete from tbl_board where boardid = #{boardId}
+	</delete>
+
 </mapper>

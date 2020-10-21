@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class BookVO {
 	private Long bookId;
+	//private Long memberId;
 	private Long boardId;
 	private String thumbnail;
 	private String title;

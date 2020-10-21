@@ -15,5 +15,7 @@ public class BoardVO {
 	private String writer;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date regdate;
+	
+	private BookVO book;
 
 }

@@ -7,4 +7,16 @@
 	<insert id="insert">
 		insert into tbl_book(bookid,boardid,thumbnail,title,authors,url) values(seq_book.nextval,#{boardId},#{thumbnail},#{title},#{authors},#{url})
 	</insert>
+	<update id="update">
+		update tbl_book
+		set thumbnail = #{thumbnail},
+		title = #{title},
+		authors = #{authors},
+		url = #{url}
+		where bookid = #{bookId}
+	</update>
+	
+	<delete id="delete">
+		delete from tbl_book where boardid = #{boardId}
+	</delete>
 </mapper>

@@ -1,11 +1,14 @@
 package com.jisung.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jisung.domain.BoardVO;
 import com.jisung.domain.BookVO;
+import com.jisung.domain.Criteria;
 import com.jisung.mapper.BoardMapper;
 import com.jisung.mapper.BookMapper;
 
@@ -37,5 +40,46 @@ public class BoardServiceImpl implements BoardService {
 		
 		
 	}
+
+	@Override
+	public List<BoardVO> list(Criteria cri) {
+		log.info("게시물 리스트 출력");
+		log.info("get List with criteria : "+cri);
+		return boardMapper.listWithPaging(cri);
+	}
+
+	@Override
+	public BoardVO get(int boardId) {
+		log.info("해당 게시물 정보");
+		
+		return boardMapper.get(boardId);
+	}
+
+	@Override
+	public int total(Criteria cri) {
+		log.info("총 게시물의 갯수");
+		return boardMapper.total(cri);
+	}
+
+	@Transactional
+	@Override
+	public boolean modify(BoardVO board,BookVO book) {
+		log.info("글 수정");
+		boolean result = boardMapper.update(board) == 1 && bookMapper.update(book) == 1;
+		
+		return result;
+	}
+
+	
+	@Transactional
+	@Override
+	public boolean remove(int boardId) {
+		log.info("글 삭제");
+		//자식 테이블 먼저 삭제
+		boolean result = bookMapper.delete(boardId) == 1 && boardMapper.delete(boardId) == 1;
+		
+		return result;
+	}
+
 
 }

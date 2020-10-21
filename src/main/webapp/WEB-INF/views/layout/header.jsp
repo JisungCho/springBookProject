@@ -16,7 +16,7 @@
 </head>
 <body>
 	<nav class="navbar navbar-expand-md bg-white navbar-light border-bottom border-light">
-		<a class="navbar-brand" href="/"><img src="../resources/img/logo.png" alt="Logo" style="width: 77px;"></a>
+		<a class="navbar-brand" href="/board/"><img src="../resources/img/logo.png" alt="Logo" style="width: 77px;"></a>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
 			<span class="navbar-toggler-icon"></span>
