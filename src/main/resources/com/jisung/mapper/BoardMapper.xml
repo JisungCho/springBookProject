@@ -94,4 +94,5 @@
 		delete from tbl_board where boardid = #{boardId}
 	</delete>
 
+	
 </mapper>

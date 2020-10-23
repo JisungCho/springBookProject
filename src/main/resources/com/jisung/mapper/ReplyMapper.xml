@@ -14,12 +14,27 @@
 		delete from tbl_reply where replyid = #{replyId}
 	</delete>
 	<update id="update">
-		update tbl_reply set reply = #{reply} where replyid = #{replyId}
+		update tbl_reply set reply = #{reply} ,replydate = sysdate where replyid = #{replyId}
 	</update>
 	
 	<select id="listWithPaging" resultType="com.jisung.domain.ReplyVO">
 		<![CDATA[
-			select * from tbl_reply where boardid = #{boardId} order by replyid asc
+			select replyid,boardid,reply,replyer,replydate
+			from (
+				select /*+INDEX(tbl_reply idx_reply)*/ rownum rn,replyid,boardid,reply,replyer,replydate
+				from tbl_reply
+				where boardid = #{boardId} and replyid >0 and rownum <= #{cri.pageNum} * #{cri.amount}
+			)
+			where rn > (#{cri.pageNum}-1) * #{cri.amount} 
 		]]>
 	</select>
+	
+	<select id="total" resultType="int">
+		select count(*) from tbl_reply where boardid = #{boardId}
+	</select>
+	
+	
+	<delete id="deleteAll">
+		delete from tbl_reply where boardid = #{boardId}
+	</delete>
 </mapper>

@@ -15,4 +15,7 @@ public interface ReplyMapper {
 	public List<ReplyVO> listWithPaging(@Param("cri") Criteria cri,@Param("boardId") Long boardId); // 페이징 읽기
 	public int delete(Long replyId); //삭제
 	public int update(ReplyVO vo); //수정
+	public int total(Long boardId);
+	
+	public int deleteAll(Long boardId);
 }

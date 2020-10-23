@@ -12,11 +12,11 @@ public interface BoardMapper {
 	
 	public List<BoardVO> listWithPaging(Criteria cri);
 	
-	public BoardVO get(int boardId);
+	public BoardVO get(Long boardId);
 	
 	public int total(Criteria cri);
 	
 	public int update(BoardVO vo);
 	
-	public int delete(int boardId);
+	public int delete(Long boardId);
 }

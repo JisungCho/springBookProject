@@ -11,6 +11,7 @@ import com.jisung.domain.BookVO;
 import com.jisung.domain.Criteria;
 import com.jisung.mapper.BoardMapper;
 import com.jisung.mapper.BookMapper;
+import com.jisung.mapper.ReplyMapper;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -24,6 +25,9 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Autowired
 	private BookMapper bookMapper;
+	
+	@Autowired
+	private ReplyMapper replyMapper;
 	
 	@Transactional
 	@Override
@@ -49,7 +53,7 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public BoardVO get(int boardId) {
+	public BoardVO get(Long boardId) {
 		log.info("해당 게시물 정보");
 		
 		return boardMapper.get(boardId);
@@ -73,10 +77,10 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Transactional
 	@Override
-	public boolean remove(int boardId) {
+	public boolean remove(Long boardId) {
 		log.info("글 삭제");
 		//자식 테이블 먼저 삭제
-		boolean result = bookMapper.delete(boardId) == 1 && boardMapper.delete(boardId) == 1;
+		boolean result = replyMapper.deleteAll(boardId)>0 && bookMapper.delete(boardId) == 1 && boardMapper.delete(boardId) == 1;
 		
 		return result;
 	}

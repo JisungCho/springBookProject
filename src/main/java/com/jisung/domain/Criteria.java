@@ -12,7 +12,7 @@ public class Criteria {
 	private String type; //검색 타입
 	private String keyword; //검색내용
 	
-	public Criteria() { //기본 1페이지 10개
+	public Criteria() { //기본 1페이지 5개
 		this(1,5);
 	}
 	public Criteria(int pageNum,int amount) {

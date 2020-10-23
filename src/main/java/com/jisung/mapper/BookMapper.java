@@ -5,5 +5,5 @@ import com.jisung.domain.BookVO;
 public interface BookMapper {
 	public void insert(BookVO book);
 	public int update(BookVO book);
-	public int delete(int boardId);
+	public int delete(Long boardId);
 }

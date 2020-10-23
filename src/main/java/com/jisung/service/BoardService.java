@@ -10,8 +10,8 @@ public interface BoardService {
 	public void register(BoardVO board,BookVO book);
 	//public List<BoardVO> list();
 	public List<BoardVO> list(Criteria cri);
-	public BoardVO get(int boardId);
+	public BoardVO get(Long boardId);
 	public int total(Criteria cri);
 	public boolean modify(BoardVO board,BookVO book);
-	public boolean remove(int boardId);
+	public boolean remove(Long boardId);
 }

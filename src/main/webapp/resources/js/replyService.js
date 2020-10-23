@@ -32,7 +32,7 @@ var replyService = (function(){
 		$.getJSON("/reply/pages/"+boardId+"/"+page+".json",
 			function(data){
 				if(callback){
-					callback(data);
+					callback(data.replyCnt, data.list);
 				}
 			}).fail(function(xhr,status,err){
 				if(error){
@@ -45,7 +45,7 @@ var replyService = (function(){
 		console.log("reply remove...............");
 
 		$.ajax({
-			type : 'get', //get방식
+			type : 'post', //get방식
 			url : "/reply/"+replyId,  //url
 			contentType : "application/json; charset=utf-8", // MIMETYPE : JSON
 			success : function(result, status, xhr) { //성공시						
@@ -61,12 +61,13 @@ var replyService = (function(){
 		});
 	};
 	
-    function update(reply, callback, error) { 
+    function update(reply, callback, error) {
 		console.log("update");
+
 
 		$.ajax({
 			type : 'put', //REST PUT
-			url : '/reply/'+reply.boardId ,
+			url : '/reply/'+ reply.replyId ,
 			data : JSON.stringify(reply), // js데이터를 JSON 문자열로 변환
 			contentType : "application/json; charset=utf-8",
 			success : function(result, status, xhr) {
@@ -79,7 +80,7 @@ var replyService = (function(){
 					error(er);
 				}
 			}
-		})
+		});
 	};
 	
 	function get(replyId, callback, error) {

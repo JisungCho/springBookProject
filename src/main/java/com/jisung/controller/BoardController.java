@@ -68,7 +68,7 @@ public class BoardController {
 	}
 
 	@GetMapping({"/get","/modify"})
-	public void get(int boardId, Model model, @ModelAttribute("cri") Criteria cri) {
+	public void get(Long boardId, Model model, @ModelAttribute("cri") Criteria cri) {
 		log.info("boardId : " + boardId);
 		log.info("pageNum : " + cri.getPageNum());
 		log.info("amount : " + cri.getAmount());
@@ -96,7 +96,7 @@ public class BoardController {
 		return "redirect:/board/";
 	}
 	@PostMapping("/remove")
-	public String remove(int boardId,Criteria cri,RedirectAttributes rttr) {
+	public String remove(Long boardId,Criteria cri,RedirectAttributes rttr) {
 		log.info("remove.."+boardId);
 		log.info("remove.."+cri);
 
