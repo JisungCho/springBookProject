@@ -13,7 +13,7 @@ public interface ReplyService {
 	
 	public int modify(ReplyVO vo); //수정
 	
-	public int remove(Long replyId); //삭제
+	public int remove(ReplyVO vo); //삭제
 	
 	public List<ReplyVO> getList(Criteria cri,Long boardId); //목록 
 	

@@ -40,8 +40,13 @@
 				</div>
 			</div>
 		</div>
-		<button data-oper="modify" class="btn btn-primary">수정완료</button>
-		<button data-oper="delete" class="btn btn-danger">삭제하기</button>
+		<sec:authentication property="principal" var="principal"/>
+		<sec:authorize access="isAuthenticated()">
+			<c:if test="${principal.username == board.writer }">
+				<button data-oper="modify" class="btn btn-primary">수정완료</button>
+				<button data-oper="delete" class="btn btn-danger">삭제하기</button>
+			</c:if>
+		</sec:authorize>
 		<button data-oper="close" class="btn btn-info">뒤로가기</button>
 		
 		<!-- 게시물 번호 -->
@@ -58,7 +63,8 @@
 		<input type="hidden" name="keyword" value='<c:out value="${cri.keyword }"></c:out>'> 
 		<input type="hidden" name="type" value='<c:out value="${cri.type }"></c:out>'> 
 		<input type="hidden" name="pageNum" value='<c:out value="${cri.pageNum }"></c:out>'> 
-		<input type="hidden" name="amount" value='<c:out value="${cri.amount }"></c:out>'> 
+		<input type="hidden" name="amount" value='<c:out value="${cri.amount }"></c:out>'>
+		<input type='hidden' name="${_csrf.parameterName}" value="${_csrf.token}">
 	</form>
 </div>
 <script>
@@ -113,6 +119,13 @@
 			console.log("삭제하기");
 			operForm.attr("action","/board/remove");
 			operForm.submit(); 
+		});
+		
+		$("button[data-oper='close']").on("click",function(e){
+			console.log("close");
+			operForm.attr("method","get")
+			operForm.attr("action","/board/get");
+			operForm.submit();
 		});
 		
 		//도서 검색 클릭시

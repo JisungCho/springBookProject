@@ -42,7 +42,9 @@
 			<div class="card">
 				<div class="card-header">
 					<i class="fa fa-comments fa-fw align-middle"></i><span class="align-middle">댓글</span>
-					<button id="addReplyBtn" class="btn btn-primary btn-sm float-right">댓글추가</button>
+					<sec:authorize access="isAuthenticated()">
+						<button id="addReplyBtn" class="btn btn-primary btn-sm float-right">댓글추가</button>
+					</sec:authorize>
 				</div>
 				<div class="card-body">
 					<ul class="list-group list-group-flush">
@@ -55,9 +57,14 @@
 		</div>
 	</div>
 	<br/>
-	<button data-oper="modify" class="btn btn-primary">수정하기</button>
+	<sec:authentication property="principal" var="principal"/>
+	<sec:authorize access="isAuthenticated()">
+		<c:if test="${principal.username == board.writer }">
+			<button data-oper="modify" class="btn btn-primary">수정하기</button>
+		</c:if>
+	</sec:authorize>
 	<button data-oper="close" class="btn btn-info">뒤로가기</button>
-
+	
 	<form id='operForm' action="/board/modify" method="get">
 		<input type="hidden" id="boardId" name="boardId" value='<c:out value="${board.boardId }"></c:out>'> <input type="hidden" name="keyword" value='<c:out value="${cri.keyword }"></c:out>'> <input type="hidden" name="type" value='<c:out value="${cri.type }"></c:out>'> <input type="hidden" name="pageNum" value='<c:out value="${cri.pageNum }"></c:out>'> <input type="hidden" name="amount" value='<c:out value="${cri.amount }"></c:out>'>
 	</form>
@@ -128,6 +135,14 @@
 <script>
 	$(document).ready(function(e){
 		
+		//모든 Ajax 전송 시 CSRF토큰을 같이 전송하도록 세팅
+		$(document).ajaxSend(function(e, xhr,options) {
+			xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+		});
+		
+		var csrfHeaderName = "${_csrf.headerName}";
+		var csrfTokenValue = "${_csrf.token}";
+		
 		var boardId = ${board.boardId};
 		console.log("게시물 번호 : "+boardId);
 		
@@ -140,16 +155,27 @@
 		var modal = $("#myModal"); //모달
 		var modalInputReply = modal.find("input[name='reply']"); //reply
 		var modalInputReplyer = modal.find("input[name='replyer']"); //replyer
+	
+		var replyer = null;	
+		<sec:authorize access="isAuthenticated()">
+			replyer = '<sec:authentication property="principal.username"/>';
+		</sec:authorize>
+		
 		var modalInputReplyDate = modal.find("input[name='replyDate']"); // replyDate
 		
 		var modalModBtn = $("#modalModBtn"); //수정버튼
 		var modalRemoveBtn = $("#modalRemoveBtn"); //삭제버튼
 		var modalRegisterBtn = $("#modalRegisterBtn"); //등록버튼
+		var modalCloseBtn = $("#modalCloseBtn"); //닫기버튼
 		
 		$("#addReplyBtn").on("click",function(e){ // 댓글 추가 버튼 클릭시
 			modalInputReplyDate.closest("div").hide();
+			modalInputReply.removeAttr("readonly");
+			modalInputReplyer.val(replyer);
+			modalInputReplyer.attr("readonly","readonly");
 			modalModBtn.hide();
 			modalRemoveBtn.hide();
+			modalRegisterBtn.show();
 			$("#myModal").modal("show");
 		});
 		
@@ -172,21 +198,47 @@
 		$(".card-body ul").on("click","li", function() {
 			console.log("댓글조회");
 			var replyId = $(this).data("replyid");
-			
 			replyService.get(replyId, function(result) {
-				$("input[name='reply']").val(result.reply);
+				
+				if(replyer == result.replyer){ // 현재 로그인한 회원과 댓글의 회원이 같은 회원이면
+					console.log("같은회원");
+					$("input[name='reply']").removeAttr("readonly");
+					$("input[name='reply']").val(result.reply);
+				}else{
+					$("input[name='reply']").attr("readonly","readonly").val(result.reply);
+				}
+				
 				$("input[name='replyer']").attr("readonly","readonly").val(result.replyer);
 				$("input[name='replyDate']").attr("readonly","readonly").val(result.replyDate);
 				modal.data("replyId",replyId);
 				modalRegisterBtn.hide();
+				modalModBtn.show();
+				modalRemoveBtn.show();
 				modal.modal("show");
 			});
 		});
 		
 		modalModBtn.on("click",function(e){
+			
+			//로그인이 안되어있으면
+			if(!replyer){
+				alert("로그인 후 수정이 가능합니다.");
+				modal.modal("hide");
+				return;
+			}
+			
+			var origin = modalInputReplyer.val();
+			
+			if(replyer != origin){
+				alert("댓글 작성자만 수정이 가능합니다.");
+				modal.modal("hide");
+				return;
+			}
+			
 			var reply = {
 				replyId:modal.data("replyId"),
-				reply:$("input[name='reply']").val()
+				reply:$("input[name='reply']").val(),
+				replyer:origin,
 			};
 			replyService.update(reply, function(result) {
 				alert(result);
@@ -196,17 +248,36 @@
 			});
 		});
 		
+		modalCloseBtn.on("click", function(e) {
+			modal.modal("hide");
+		});
+		
 		modalRemoveBtn.on("click",function(e){
 			var replyId = modal.data("replyId");
 			
-			replyService.remove(replyId, function(result) {
+			//로그인이 안되어있으면
+			if(!replyer){
+				alert("로그인 후 삭제가 가능합니다.");
+				modal.modal("hide");
+				return;
+			}
+			
+			var origin = modalInputReplyer.val();
+			
+			if(replyer != origin){
+				alert("댓글 작성자만 삭제가 가능합니다.");
+				modal.modal("hide");
+				return;
+			}
+			
+			replyService.remove(replyId, origin ,function(result) {
 				alert(result);
 				modal.modal("hide");
 				//목록갱신
 				showList(pageNum);
 			});
 		});
-		
+
 		//댓글목록 갱신
 		//page 번호가 -1 로 전달되면 마지막 페이지를 찾아서 다시 호출
 		function showList(page){

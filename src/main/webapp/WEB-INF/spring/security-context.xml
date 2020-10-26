@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="customLoginSuccess" class="com.jisung.security.CustomLoginSuccessHandler"></bean>
+	<bean id="customAccessDenied" class="com.jisung.security.CustomAccessDeniedHandler"></bean>
+	<bean id="customLogoutSuccessHandler" class="com.jisung.security.CustomLogoutSuccessHandler"></bean>
+	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></bean>
+	<bean id="customUserDetailsService" class="com.jisung.security.CustomUserDetailsService"></bean>
+	
+	
+	<security:http> <!--스프링 시큐리티의 시작 지점이 필요-->
+		 <!--AccessDeniedHandler를 구현한 클래스를 ref로 사용-->
+		 
+       	 <security:access-denied-handler ref="customAccessDenied"/> 
+		<security:logout success-handler-ref="customLogoutSuccessHandler" logout-url="/logout" invalidate-session="true" />
+       	<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess"/>
+	</security:http>
+
+	<security:authentication-manager> <!--스프링 시큐리티가 동작하기 위해서는 Authentication Manager라는 존재 필요-->
+		
+		<security:authentication-provider user-service-ref="customUserDetailsService">
+			<security:password-encoder ref="bcryptPasswordEncoder" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+</beans>

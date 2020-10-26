@@ -4,6 +4,7 @@
 
 <div class="container">
 	<form role="form" action="/board/register" method="post">
+		<input type='hidden' name="${_csrf.parameterName}" value="${_csrf.token}">
 		<input type="hidden" name="thumbnail" value="">
 		<input type="hidden" name="title" value="">
 		<input type="hidden" name="authors" value="">
@@ -17,7 +18,7 @@
 		<!-- 사라질 항목 (로그인한 회원이 작성자가 되게...) ------------------------------------------------->
 		<div class="form-group w-50">
 			<label for="writer">Writer</label> 
-			<input type="text" class="form-control" placeholder="Enter writer" name="writer">
+			<input type="text" class="form-control" placeholder="Enter writer" name="writer" value='<sec:authentication property="principal.username"/>' readonly="readonly">
 		</div>
 		<!-- ----------------------------------------------------------------------------- -->
 		

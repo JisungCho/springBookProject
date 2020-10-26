@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,11 +43,13 @@ public class BoardController {
 		return "/board/main";
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/register")
 	public void register() {
 		log.info("글 등록 접근");
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/register")
 	public String register(BoardVO board, BookVO book, RedirectAttributes rttr) {
 		log.info("상품등록처리");
@@ -60,14 +63,15 @@ public class BoardController {
 
 		return "redirect:/board/";
 	}
-
+	
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/bookSearch")
 	public void bookSearch() {
 		log.info("북 검색페이지");
 
 	}
-
-	@GetMapping({"/get","/modify"})
+	
+	@GetMapping({"/get"})
 	public void get(Long boardId, Model model, @ModelAttribute("cri") Criteria cri) {
 		log.info("boardId : " + boardId);
 		log.info("pageNum : " + cri.getPageNum());
@@ -76,7 +80,19 @@ public class BoardController {
 		log.info(vo);
 		model.addAttribute("board", vo);
 	}
-
+	
+	@GetMapping({"/modify"})
+	@PreAuthorize("isAuthenticated()")
+	public void getmodify(Long boardId, Model model, @ModelAttribute("cri") Criteria cri) {
+		log.info("boardId : " + boardId);
+		log.info("pageNum : " + cri.getPageNum());
+		log.info("amount : " + cri.getAmount());
+		BoardVO vo = boardService.get(boardId);
+		log.info(vo);
+		model.addAttribute("board", vo);
+	}
+	
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify")
 	public String modify(BoardVO board,BookVO book,Criteria cri,RedirectAttributes rttr) {
 		log.info("update.."+board);

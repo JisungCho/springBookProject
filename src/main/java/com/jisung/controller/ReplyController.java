@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ public class ReplyController {
 	private ReplyService replyService;
 	
 	//Json데이터를 받아서 사용하고 리턴값을 일반 문자열
+	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "/new",consumes = "application/json",produces = "text/plain;charset=UTF-8")
 	public ResponseEntity<String> create(@RequestBody ReplyVO vo) { // 들어온 Json데이터를 reply객체로 변환
 		log.info("댓글 등록  "+vo);
@@ -50,20 +52,21 @@ public class ReplyController {
 		return new ResponseEntity<ReplyVO>(replyService.get(replyId),HttpStatus.OK);
 	}
 	
+	@PreAuthorize("principal.username == #vo.replyer")
 	@PostMapping(value = "/{replyId}", produces = "text/plain;charset=UTF-8")
-	public ResponseEntity<String> remove(@PathVariable("replyId") Long replyId){
+	public ResponseEntity<String> remove(@RequestBody ReplyVO vo,@PathVariable("replyId") Long replyId){
 		log.info("댓글 삭제");
-		int removeCount = replyService.remove(replyId);
+		int removeCount = replyService.remove(vo);
 		
 		return removeCount == 1 ? new ResponseEntity<String>("삭제완료", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 	}
 	
+	@PreAuthorize("principal.username == #vo.replyer")
 	@RequestMapping(method = {RequestMethod.PUT , RequestMethod.PATCH},value="/{replyId}",
 			consumes = "application/json", //json데이터가 들어옴
 			produces = "text/plain;charset=UTF-8")
 	public ResponseEntity<String> modify(@PathVariable("replyId") Long replyId,@RequestBody ReplyVO vo){
 		log.info("댓글 수정");
-		vo.setReplyId(replyId);
 		
 		return replyService.modify(vo) == 1 ? new ResponseEntity<String>("수정완료", HttpStatus.OK) : new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}

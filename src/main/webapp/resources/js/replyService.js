@@ -41,12 +41,13 @@ var replyService = (function(){
 		});
 	}	
 	
-	function remove(replyId, callback, error) {
+	function remove(replyId, replyer,callback, error) {
 		console.log("reply remove...............");
 
 		$.ajax({
 			type : 'post', //get방식
 			url : "/reply/"+replyId,  //url
+			data : JSON.stringify({replyId:replyId, replyer:replyer}),
 			contentType : "application/json; charset=utf-8", // MIMETYPE : JSON
 			success : function(result, status, xhr) { //성공시						
 				if (callback) {
@@ -87,7 +88,7 @@ var replyService = (function(){
 		console.log("reply get...............");
 		
 		
-		$.getJSON("/reply//"+replyId+".json",
+		$.getJSON("/reply/"+replyId+".json",
 			function(data){
 				if(callback){
 					callback(data);

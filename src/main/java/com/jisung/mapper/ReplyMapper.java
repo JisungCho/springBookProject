@@ -13,7 +13,7 @@ public interface ReplyMapper {
 	public ReplyVO read(Long replyId); //조회
 	//Mybatis는 한개의 객체만 던질 수 있음 2개이상일 경우 @param으로 지정
 	public List<ReplyVO> listWithPaging(@Param("cri") Criteria cri,@Param("boardId") Long boardId); // 페이징 읽기
-	public int delete(Long replyId); //삭제
+	public int delete(ReplyVO vo); //삭제
 	public int update(ReplyVO vo); //수정
 	public int total(Long boardId);
 	

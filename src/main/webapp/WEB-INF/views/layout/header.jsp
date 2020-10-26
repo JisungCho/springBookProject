@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,6 +15,18 @@
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script type="text/javascript">
+	$(document).ready(function(e){
+		
+		$("#logout").on("click", function(e) {
+			console.log("로그아웃");
+			e.preventDefault();
+			$("#logoutForm").submit();
+			
+		})
+		
+	})
+</script>
 </head>
 <body>
 	<nav class="navbar navbar-expand-md bg-white navbar-light border-bottom border-light">
@@ -25,7 +38,8 @@
 
 		<div class="collapse navbar-collapse" id="collapsibleNavbar">
 			<ul class="navbar-nav mr-auto">
-				<li class="nav-item"><a class="nav-link" href="/board/register">글쓰기</a></li>
+			<li class="nav-item"><a class="nav-link" href="/board/register">글쓰기</a></li>
+			<sec:authorize access="isAuthenticated()">	
 				<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">내 정보 </a>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="#">내정보 수정</a> 
@@ -33,19 +47,28 @@
 						<a class="dropdown-item" href="#">즐겨찾기</a>
 					</div>
 				</li>
+			</sec:authorize>
+				<!--  
 				<li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">게시판 </a>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="#">독서노트</a> 
 						<a class="dropdown-item" href="#">독서모임</a> 
 					</div>
 				</li>
+				-->
 			</ul>
 			<ul class="navbar-nav">
-				<li class="nav-item"><a class="nav-link" href="#">회원가입</a></li>
-				<li class="nav-item"><a class="nav-link" href="#">로그인</a></li>
-				<li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a></li>
+				<sec:authorize access="isAnonymous()">
+					<li class="nav-item"><a class="nav-link" href="/join">회원가입</a></li>
+					<li class="nav-item"><a class="nav-link" href="/customLogin">로그인</a></li>
+				</sec:authorize>
+				<sec:authorize access="isAuthenticated()">
+					<li class="nav-item"><a id="logout" class="nav-link" href="#">로그아웃</a></li>
+				</sec:authorize>
 			</ul>
-
 		</div>
+    	<form id="logoutForm" method='post' action="/logout">
+			<input type='hidden' name="${_csrf.parameterName}" value="${_csrf.token}">
+		</form>
 	</nav>
 	<br>

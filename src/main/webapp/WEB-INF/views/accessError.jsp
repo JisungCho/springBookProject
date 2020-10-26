@@ -1,0 +1,17 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Access Denied Page</title>
+</head>
+<body>
+<h1>Access Denied Page</h1>
+<!--HttpServletRequest안에 SPRING_SECURITY_403_EXCEPTION이라는 이름으로 AccessDeniedException 객체가 전달-->
+<h2><c:out value="${SPRING_SECURITY_403_EXCEPTION.getMessage()}"></c:out></h2>
+<h2><c:out value="${msg }"></c:out></h2>
+</body>
+</html>
