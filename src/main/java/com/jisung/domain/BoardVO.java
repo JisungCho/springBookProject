@@ -9,11 +9,10 @@ import lombok.Data;
 
 @Data
 public class BoardVO {
-	private Long boardId;
-	private String subject;
-	private String content;
-	private String writer;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Long boardId; // 글번호
+	private String subject; // 제목
+	private String content; // 내용
+	private String writer; // 작성자
 	private Date regdate;
 	
 	private BookVO book;

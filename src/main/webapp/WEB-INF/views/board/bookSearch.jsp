@@ -43,7 +43,7 @@
 				for(var i=0;i<result.documents.length;i++){
 				str += '<div id="bookCard'+i+'" class="card" style="max-width: 500px;">';
 						str += '<div class="row no-gutters">';
-							str += '<div class="col-sm-5">';
+							str += '<div class="col-sm-4">';
 								str += '<img id="thumbnail" src="'+result.documents[i].thumbnail+'" class="card-img-top h-60" alt="이미지 없음">';
 							str += '</div>';
 						str += '<div class="col-sm-7">';
@@ -95,7 +95,7 @@
 					for(var i=0;i<result.documents.length;i++){
 						str += '<div id="bookCard'+i+'" class="card" style="max-width: 500px;">';
 								str += '<div class="row no-gutters">';
-									str += '<div class="col-sm-5">';
+									str += '<div class="col-sm-4">';
 										str += '<img id="thumbnail" src="'+result.documents[i].thumbnail+'" class="card-img-top h-60" alt="이미지 없음">';
 									str += '</div>';
 								str += '<div class="col-sm-7">';

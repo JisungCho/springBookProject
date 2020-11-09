@@ -59,7 +59,7 @@
 		var formObj = $("form");
 		
 		$("#btn-search").on("click", function(e) {
-			window.open('/board/bookSearch','window_name','width=430,height=500,location=no,status=no,scrollbars=yes');
+			window.open('/board/bookSearch','window_name','width=600,height=500,location=no,status=no,scrollbars=yes');
 		});
 		
 		$("#btn-write").on("click",function(e){ 

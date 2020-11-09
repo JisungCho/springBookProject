@@ -31,9 +31,21 @@ public class MemberServiceImpl implements MemberService{
 		
 		memberMapper.insert(member);
 		
+	
 		authMapper.insert(auth);
 		
 		
+	}
+
+
+	@Override
+	public boolean checkId(String userid) {
+		int count = memberMapper.checkId(userid);
+		if(count > 0) {
+			return false; //중복 된 경우
+		}else {
+			return true; //중복 안된 경우
+		}
 	}
 
 }

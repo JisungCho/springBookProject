@@ -2,6 +2,7 @@ console.log("Reply Module......");
 
 var replyService = (function(){
 	
+	//댓글 등록
 	function register(reply, callback, error) {
 		console.log("reply add...............");
 

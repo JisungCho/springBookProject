@@ -53,6 +53,7 @@ public class ReplyServiceImpl implements ReplyService {
 	@Override
 	public ReplyPageDTO getListPage(Criteria cri, Long boardId) {
 		log.info("reply page list");
+		//해당 게시글의 댓글 수 , 현재 페이지의 댓글목록
 		return new ReplyPageDTO(replyMapper.total(boardId), replyMapper.listWithPaging(cri, boardId));
 	}
 	

@@ -30,6 +30,7 @@ public class ReplyController {
 	@Autowired
 	private ReplyService replyService;
 	
+	//댓글 등록
 	//Json데이터를 받아서 사용하고 리턴값을 일반 문자열
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "/new",consumes = "application/json",produces = "text/plain;charset=UTF-8")
@@ -39,10 +40,11 @@ public class ReplyController {
 		return insertCount == 1 ? new ResponseEntity<String>("등록완료", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);	
 	}
 	
+	//댓글 목록
 	@GetMapping(value = "/pages/{boardId}/{page}",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
-	public ResponseEntity<ReplyPageDTO> getList(@PathVariable("page") int page, @PathVariable("boardId") Long boardId){
+	public ResponseEntity<ReplyPageDTO> getList(@PathVariable("boardId") Long boardId,@PathVariable("page") int page){
 		log.info("특정 게시물의 댓글 목록 확인 ");
-		Criteria cri = new Criteria(page, 5);
+		Criteria cri = new Criteria(page, 5); //현재 페이지와 한 페이지당 보여줄 양을 설정
 		return new ResponseEntity<ReplyPageDTO>(replyService.getListPage(cri, boardId), HttpStatus.OK);
 	}
 	

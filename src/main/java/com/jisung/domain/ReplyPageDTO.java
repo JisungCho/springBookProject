@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ReplyPageDTO {
-	private int replyCnt;
-	private List<ReplyVO> list;
+	private int replyCnt; //댓글 수 
+	private List<ReplyVO> list; // 댓글 리스트
 }

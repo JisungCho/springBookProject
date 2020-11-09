@@ -75,6 +75,22 @@
 			where rn > (#{pageNum}-1)*#{amount}
 		]]>
 	</select>
+	
+	<!-- 내글 목록 -->
+	<select id="myListWithPaging" resultType="com.jisung.domain.BoardVO">
+		<![CDATA[
+			select boardid,subject,content,writer,regdate
+			from
+				(
+					select /*+INDEX_DESC(tbl_board pk_board) */ rownum rn,boardid,subject,content,writer,regdate
+					from tbl_board
+					where
+					rownum <= #{cri.pageNum} * #{cri.amount} and writer = #{userid} 
+			)
+				
+			where rn > (#{cri.pageNum}-1)*#{cri.amount}
+		]]>
+	</select>
 
 	<select id="total" resultType="int">
 		<![CDATA[ 
@@ -83,6 +99,13 @@
 		<include refid="criteria"></include>
 		<![CDATA[ 
 			boardid > 0
+		]]>
+	</select>
+	
+	<select id="myTotal" resultType="int">
+		<![CDATA[ 
+			select count(*) from tbl_board where 
+			boardid > 0 and writer = #{userid}
 		]]>
 	</select>
 	

@@ -5,4 +5,5 @@ import com.jisung.domain.MemberVO;
 
 public interface MemberService {
 	public void join(MemberVO member,AuthVO auth);
+	public boolean checkId(String userid);
 }

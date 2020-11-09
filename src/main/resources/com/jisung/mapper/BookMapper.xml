@@ -3,7 +3,43 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jisung.mapper.BookMapper">
-
+	
+	<resultMap type="com.jisung.domain.BookVO" id="bookMap">
+		<id property="bookId" column="bookid" />
+		<result property="boardId" column="boardid" />
+		<result property="thumbnail" column="thumbnail" />
+		<result property="title" column="title" />
+		<result property="authors" column="authors" />
+		<result property="url" column="url" />
+		<collection property="favorite" resultMap="favoriteVO"></collection>
+	</resultMap>
+	
+	<resultMap type="com.jisung.domain.FavoriteVO" id="favoriteVO">
+		<id property="favoriteId" column="favoriteId"/>
+		<result property="userid" column="userid"/>
+		<result property="bookId" column="bookId"/>
+	</resultMap>
+	
+	<select id="read" resultMap="bookMap">
+		<![CDATA[
+			select thumbnail,title,authors,url 
+			FROM(
+			    SELECT rownum rn,thumbnail,title,authors,url
+					FROM tbl_book book
+					LEFT OUTER JOIN tbl_favorite favorite 
+					ON book.bookid = favorite.bookid WHERE favorite.userid = #{userid} and rownum <= #{cri.pageNum} * #{cri.amount} order by favoriteid asc
+			)
+			where rn > (#{cri.pageNum}-1)*#{cri.amount}
+		]]>
+	</select>
+	
+	<select id="total" resultType="int">
+		SELECT count(*)
+		FROM tbl_book book
+		LEFT OUTER JOIN tbl_favorite favorite 
+		ON book.bookid = favorite.bookid WHERE favorite.userid = #{userid}
+	</select>
+	
 	<insert id="insert">
 		insert into tbl_book(bookid,boardid,thumbnail,title,authors,url) values(seq_book.nextval,#{boardId},#{thumbnail},#{title},#{authors},#{url})
 	</insert>

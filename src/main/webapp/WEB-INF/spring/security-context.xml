@@ -19,10 +19,11 @@
        	<security:form-login login-page="/customLogin" authentication-success-handler-ref="customLoginSuccess"/>
 	</security:http>
 
-	<security:authentication-manager> <!--스프링 시큐리티가 동작하기 위해서는 Authentication Manager라는 존재 필요-->
+	<security:authentication-manager alias="authenticationManager"> <!--스프링 시큐리티가 동작하기 위해서는 Authentication Manager라는 존재 필요-->
 		
 		<security:authentication-provider user-service-ref="customUserDetailsService">
 			<security:password-encoder ref="bcryptPasswordEncoder" />
 		</security:authentication-provider>
 	</security:authentication-manager>
+
 </beans>

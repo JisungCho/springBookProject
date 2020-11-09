@@ -21,7 +21,7 @@
     
     <!--left outer join 은 항상 왼쪽 테이블의 내용을 다 반환한 다음에 on의 조건에 따라 오른쪽 테이블과 join하고 오른쪽 테이블에 없는 내용일 경우 null을 반환하고 on 조건에서 필터링한 후에 동일한 결합키가 복수개의 레코드로 존재할 경우 (n-1)  개수씩 레코드가 더 늘어납니다. 그런 다음에 where 절을 통해 필터링한 다음 결과를 반환합니다. -->
 	<select id="read" resultMap="memberMap">
-		SELECT mem.userid , userpw , username, enabled, regdate, auth
+		SELECT mem.userid , userpw , username, regdate, auth
 		FROM tbl_member mem 
 		LEFT OUTER JOIN tbl_member_auth auth 
 		ON mem.userid = auth.userid WHERE mem.userid = #{userid}
@@ -30,4 +30,13 @@
 	<insert id="insert">
 		insert into tbl_member(userid,userpw,username) values (#{userid},#{userpw},#{userName})
 	</insert>
+	
+	<update id="update">
+		update tbl_member set userpw = #{userpw} , username = #{userName} where userid = #{userid}
+	</update>
+	
+	<select id="checkId" resultType="int">
+		SELECT COUNT(*) FROM tbl_member
+		WHERE USERID = #{userid}
+	</select>
 </mapper>

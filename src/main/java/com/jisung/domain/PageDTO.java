@@ -7,7 +7,6 @@ public class PageDTO {
 	private int startPage;
 	private int endPage;
 	private boolean prev , next;
-	
 	private int total;
 	private Criteria cri; // 페이지에서 보여주는 데이터 수 , 현재 페이지 번호가 담겨있음
 	

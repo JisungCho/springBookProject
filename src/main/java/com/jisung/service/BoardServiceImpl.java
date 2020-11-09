@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jisung.domain.BoardVO;
 import com.jisung.domain.BookVO;
 import com.jisung.domain.Criteria;
+import com.jisung.domain.FavoriteVO;
 import com.jisung.mapper.BoardMapper;
 import com.jisung.mapper.BookMapper;
+import com.jisung.mapper.FavoriteMapper;
 import com.jisung.mapper.ReplyMapper;
 
 import lombok.AllArgsConstructor;
@@ -28,6 +30,9 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Autowired
 	private ReplyMapper replyMapper;
+	
+	@Autowired
+	private FavoriteMapper favoriteMapper;
 	
 	@Transactional
 	@Override
@@ -55,7 +60,6 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public BoardVO get(Long boardId) {
 		log.info("해당 게시물 정보");
-		
 		return boardMapper.get(boardId);
 	}
 
@@ -84,6 +88,33 @@ public class BoardServiceImpl implements BoardService {
 		
 		return result;
 	}
+
+	@Override
+	public void favoriteRegister(FavoriteVO vo) {
+		log.info("좋아요 추가");
+		favoriteMapper.insert(vo);
+	}
+
+	@Override
+	public boolean favoriteCheck(String userid, Long bookId) {
+		log.info("좋아요 체크");
+		int count = favoriteMapper.prevent_dup(userid, bookId);
+		if(count > 0) { // 좋아요를 누른 상태이면
+			log.info("좋아요 눌림");
+			return true;
+		}else { // 좋아요를 안눌른 상태
+			log.info("좋아요 안눌림");
+			return false;
+		}
+	}
+
+	@Override
+	public boolean favoriteRemove(FavoriteVO vo) {
+		log.info("좋아요 제거");
+		int result = favoriteMapper.delete(vo);
+		return result == 1 ? true : false;
+	}
+
 
 
 }
