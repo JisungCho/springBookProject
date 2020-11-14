@@ -16,9 +16,11 @@
 							<h5 id="title" class="card-title">${result.title }</h5>
 							<h6 id="authors" class="card-subtitle mb-2 text-muted">${result.authors}</h6>
 							<h6 class="card-subtitle mb-2 text-muted">
-							<a id="url" target="_blank" href="${result.url }">상세보기</a>
+								<a id="url" target="_blank" href="${result.url }">상세보기</a>
 							</h6>
+							<button data-number="${result.favoriteId}" class="btn btn-outline-danger">삭제</button>
 						</div>
+	
 					</div>
 				</div>
 			</div>
@@ -47,18 +49,41 @@
 </div>
 <script>
 	$(document).ready(function() {
+		//모든 Ajax 전송 시 CSRF토큰을 같이 전송하도록 세팅
+		var csrfHeaderName = "${_csrf.headerName}";
+		var csrfTokenValue = "${_csrf.token}";
+		
+		$(document).ajaxSend(function(e, xhr,options) {
+			xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+		});
+		
 		var actionForm = $("#actionForm");
-		$(".page-link").on(
+		$(".page-link").on(  //Next,Prevois,페이지번호 클릭 시 페이지 이동
 				"click",
 				function(e) { //<a>태그 클릭시
 					e.preventDefault(); //기존 이벤트 중지
 					console.log('paging');
-					actionForm.find("input[name='pageNum']")
-							.val($(this).attr("href"));
-					//actionForm의 pageNum의 value값을 현재 눌린 <a>태그의 href의 값으로 설정
+					actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+					//actionForm의 pageNum의 value값을 눌린 페이지번호로 설정
 					actionForm.attr("action", "/info/myFavorite");
 					actionForm.submit();
 		});
+		
+		$("button").on("click",function(e){
+			var favoriteId = $(this).data("number");
+			console.log("좋아요 삭제");
+			console.log(favoriteId);
+			
+			$.ajax({
+				type : 'delete',
+				url : '/info/delete/'+favoriteId ,
+				success : function(deleteResult, status, xhr) {
+					alert("삭제되었습니다");
+					location.reload();
+				}
+			})
+		});
+		
 	});
 </script>
 <%@ include file="../layout/footer.jsp"%>

@@ -32,7 +32,15 @@
 	</insert>
 	
 	<update id="update">
-		update tbl_member set userpw = #{userpw} , username = #{userName} where userid = #{userid}
+		<choose>
+			<when test="userpw != null">
+				update tbl_member set userpw = #{userpw} , username = #{userName} where userid = #{userid}			
+			</when>
+			<otherwise>
+				update tbl_member set username = #{userName} where userid = #{userid}		
+			</otherwise>
+		</choose>
+
 	</update>
 	
 	<select id="checkId" resultType="int">

@@ -30,16 +30,13 @@ public class MemberServiceImpl implements MemberService{
 		log.info("회원가입");
 		
 		memberMapper.insert(member);
-		
-	
 		authMapper.insert(auth);
-		
-		
 	}
 
 
 	@Override
 	public boolean checkId(String userid) {
+		log.info("아이디 중복검사");
 		int count = memberMapper.checkId(userid);
 		if(count > 0) {
 			return false; //중복 된 경우

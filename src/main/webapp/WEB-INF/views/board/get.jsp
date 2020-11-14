@@ -149,7 +149,7 @@
 			operForm.submit();
 		});
 		
-		//수정버튼 클릭 시 boardId , pageNum, amount , type ,keyword 넘겨줌
+		//수정버튼 클릭 시 get방식으로 /board/modify에 boardId , pageNum, amount , type ,keyword 넘겨줌
 		$("button[data-oper='modify']").on("click",function(e){
 			operForm.submit();
 		});
@@ -270,12 +270,14 @@
 		showList(1); //처음 조회페이지로 간 경우에는 1페이지를 보여줌	
 		
 		
+		
 		// 댓글 추가 버튼 클릭시
 		$("#addReplyBtn").on("click",function(e){ 
 			//replydate 
 			modalInputReplyDate.closest("div").hide();
 			//내용 작성할 수 있게 
 			modalInputReply.removeAttr("readonly");
+			modalInputReply.val("");
 			//댓글 작성자가 현재 로그인한 사람으로 고정
 			modalInputReplyer.val(replyer);
 			modalInputReplyer.attr("readonly","readonly");
@@ -405,8 +407,18 @@
 		
 		//좋아요 추가 버튼 클릭
 		 $("#favoriteBox").on("click","#likebtn",function(e){
-			 var bookId = ${board.book.bookId};
-			 var data = {userid:encodeURIComponent(replyer) ,bookId:bookId};
+			 var thumbnail = "${board.book.thumbnail}";
+			 var title = "${board.book.title}";  
+			 var authors = "${board.book.authors}";
+			 var url ="${board.book.url}";
+			 
+			 var data = {
+					 userid:encodeURIComponent(replyer),
+					 thumbnail:thumbnail, 
+					 title :title,
+					 authors :authors,
+					 url:url,
+				};
 			 
 			if(!replyer){
 					alert("로그인 후 가능합니다.");
@@ -429,8 +441,11 @@
 		
 		//좋아요 삭제 버튼 클릭
 		 $("#favoriteBox").on("click","#unlikebtn",function(e){
-			 var bookId = ${board.book.bookId};
-			 var data = {userid:replyer ,bookId:bookId};
+			 var url ="${board.book.url}";
+			 var data = {
+				 userid:replyer,
+				 url:url
+			 };
 			 
 
 	         $.ajax({
@@ -442,6 +457,7 @@
 	            	 if(result){
 	 	             	alert("좋아요가 삭제되었습니다.");
 		             	$("#favoriteBox").empty();
+		             	//하트모양 바꿈
 		             	var str = '<button id="likebtn" class="btn"><i class="fa fa-heart-o" style="font-size:30px;color:red"></i></button>';
 		             	$("#favoriteBox").append(str); 
 	            	 }

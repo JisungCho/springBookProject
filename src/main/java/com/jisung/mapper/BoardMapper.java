@@ -9,22 +9,20 @@ import com.jisung.domain.Criteria;
 
 public interface BoardMapper {
 	public void insertSelectKey(BoardVO board);
+		
+	public List<BoardVO> listWithPaging(Criteria cri); //전체 글 목록
 	
-	//public List<BoardVO> list();
+	public List<BoardVO> myListWithPaging(@Param("cri") Criteria cri,@Param("userid") String userid); //내가 쓴 글 목록
 	
-	public List<BoardVO> listWithPaging(Criteria cri); // 페이징한 게시물 목록 가져오기 cri에는 pageNum과 amount가 존재
+	public BoardVO get(Long boardId); //글 정보
 	
-	public List<BoardVO> myListWithPaging(@Param("cri") Criteria cri,@Param("userid") String userid);
+	public int total(Criteria cri); //전체 글 갯수
 	
-	public BoardVO get(Long boardId);
+	public int myTotal(@Param("userid") String userid); // 내가 쓴 글 갯수
 	
-	public int total(Criteria cri);
+	public int update(BoardVO vo); //글 수정
 	
-	public int myTotal(@Param("userid") String userid);
-	
-	public int update(BoardVO vo);
-	
-	public int delete(Long boardId);
+	public int delete(Long boardId); //업데이트
 	
 	
 }

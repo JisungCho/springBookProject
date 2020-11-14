@@ -6,5 +6,8 @@ import lombok.Data;
 public class FavoriteVO {
 	private Long favoriteId;
 	private String userid;
-	private Long bookId;
+	private String thumbnail;
+	private String title;
+	private String authors;
+	private String url;
 }

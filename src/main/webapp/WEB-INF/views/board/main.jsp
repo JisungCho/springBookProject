@@ -95,7 +95,7 @@
 			checkModal(result);
 			history.replaceState({}, null, null);
 			
-			//모달 체크
+			//전달된 result가 0보다 크면 modal의 내용을 바꿔주고나서 모달창을 보여줌
 			function checkModal(result) {
 				if (result === '' || history.state) {
 					return;

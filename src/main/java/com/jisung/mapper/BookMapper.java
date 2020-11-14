@@ -11,6 +11,4 @@ public interface BookMapper {
 	public void insert(BookVO book);
 	public int update(BookVO book);
 	public int delete(Long boardId);
-	public List<BookVO> read(@Param("cri")Criteria cri, @Param("userid")String userid);
-	public int total(String userid);
 }

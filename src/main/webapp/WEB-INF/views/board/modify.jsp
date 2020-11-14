@@ -41,8 +41,8 @@
 			</div>
 		</div>
 		<sec:authentication property="principal" var="principal"/>
-		<sec:authorize access="isAuthenticated()">
-			<c:if test="${principal.username == board.writer }">
+		<sec:authorize access="isAuthenticated()"> <!-- 로그인한 회원 -->
+			<c:if test="${principal.username == board.writer }"> <!-- 로그인한 유저가 해당 글의 작성자이면 -->
 				<button data-oper="modify" class="btn btn-primary">수정완료</button>
 				<button data-oper="delete" class="btn btn-danger">삭제하기</button>
 			</c:if>
@@ -74,7 +74,7 @@
 	});
 </script>
 <script>
-	function getReturnValue(returnValue) { 
+	function getReturnValue(returnValue) { //책 검색 페이지에서 처리 할 함수
 		
 		console.log(returnValue);
 		returnValue.find("button").remove();
@@ -94,18 +94,18 @@
 			operForm.submit();
 		});
 		
-		//수정완료 버튼 클릭시
+		//수정완료 버튼 클릭 시 수정한 내용을 전달
 		$("button[data-oper='modify']").on("click",function(e){
 			e.preventDefault();
 			console.log("수정완료");
 			
-			
+			//수정된 책 정보
 			var thumbnail = $("#thumbnail").attr("src");
 			var title = $("#title").text();
 			var authors = $("#authors").text();
 			var url = $("#url").attr("href");
 			
-			
+			//책 정보 수정
 			$("input[name='thumbnail']").val(thumbnail);
 			$("input[name='title']").val(title);
 			$("input[name='authors']").val(authors);
@@ -114,6 +114,7 @@
 			operForm.submit(); 
 		});
 		
+		//삭제버튼 클릭 시
 		$("button[data-oper='delete']").on("click",function(e){
 			e.preventDefault();
 			console.log("삭제하기");
@@ -130,7 +131,7 @@
 		
 		//도서 검색 클릭시
 		$("#btn-search").on("click", function(e) {
-			window.open('/board/bookSearch','window_name','width=430,height=500,location=no,status=no,scrollbars=yes');
+			window.open('/board/bookSearch','window_name','width=600,height=500,location=no,status=no,scrollbars=yes');
 		});
 	});
 </script>

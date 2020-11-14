@@ -34,7 +34,7 @@ public class ReplyController {
 	//Json데이터를 받아서 사용하고 리턴값을 일반 문자열
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping(value = "/new",consumes = "application/json",produces = "text/plain;charset=UTF-8")
-	public ResponseEntity<String> create(@RequestBody ReplyVO vo) { // 들어온 Json데이터를 reply객체로 변환
+	public ResponseEntity<String> create(@RequestBody ReplyVO vo) { // 들어온 댓글 생성
 		log.info("댓글 등록  "+vo);
 		int insertCount = replyService.register(vo);
 		return insertCount == 1 ? new ResponseEntity<String>("등록완료", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);	
@@ -48,12 +48,14 @@ public class ReplyController {
 		return new ResponseEntity<ReplyPageDTO>(replyService.getListPage(cri, boardId), HttpStatus.OK);
 	}
 	
+	//댓글 조회
 	@GetMapping(value = "/{replyId}", produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<ReplyVO> get(@PathVariable("replyId") Long replyId){
 		log.info("댓글 상세 조회");
 		return new ResponseEntity<ReplyVO>(replyService.get(replyId),HttpStatus.OK);
 	}
 	
+	//댓글 삭제
 	@PreAuthorize("principal.username == #vo.replyer")
 	@PostMapping(value = "/{replyId}", produces = "text/plain;charset=UTF-8")
 	public ResponseEntity<String> remove(@RequestBody ReplyVO vo,@PathVariable("replyId") Long replyId){
@@ -63,6 +65,7 @@ public class ReplyController {
 		return removeCount == 1 ? new ResponseEntity<String>("삭제완료", HttpStatus.OK) : new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); 
 	}
 	
+	//댓글 수정
 	@PreAuthorize("principal.username == #vo.replyer")
 	@RequestMapping(method = {RequestMethod.PUT , RequestMethod.PATCH},value="/{replyId}",
 			consumes = "application/json", //json데이터가 들어옴

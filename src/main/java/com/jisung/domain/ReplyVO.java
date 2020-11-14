@@ -8,8 +8,8 @@ import lombok.Data;
 
 @Data
 public class ReplyVO {
-	private Long replyId;
-	private Long boardId;
+	private Long replyId; //pk
+	private Long boardId; //FK
 	private String reply;
 	private String replyer;
 	//JSON으로 전달 시 해당 형식으로 전송

@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 public class BoardVO {
-	private Long boardId; // 글번호
+	private Long boardId; // 글번호 pK
 	private String subject; // 제목
 	private String content; // 내용
 	private String writer; // 작성자

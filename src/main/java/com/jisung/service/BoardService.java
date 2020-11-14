@@ -11,12 +11,12 @@ public interface BoardService {
 	public void register(BoardVO board,BookVO book);
 	//public List<BoardVO> list();
 	public List<BoardVO> list(Criteria cri); // 게시물 목록 
-	public BoardVO get(Long boardId);
+	public BoardVO get(Long boardId); // 해당 게시물 가져오기
 	public int total(Criteria cri); // 개시물 수 구하기
-	public boolean modify(BoardVO board,BookVO book);
-	public boolean remove(Long boardId);
+	public boolean modify(BoardVO board,BookVO book); // 게시물 수정
+	public boolean remove(Long boardId); //게시물 삭제
 	
-	public void favoriteRegister(FavoriteVO vo);
-	public boolean favoriteCheck(String userid,Long bookId);
-	public boolean favoriteRemove(FavoriteVO vo);
+	public void favoriteRegister(FavoriteVO vo); // 좋아요 등록
+	public boolean favoriteCheck(String userid,String url); //좋아요 체크
+	public boolean favoriteRemove(FavoriteVO vo); //좋아요 제거
 }

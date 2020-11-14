@@ -38,12 +38,12 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void register(BoardVO board,BookVO book) {
 		
-		boardMapper.insertSelectKey(board);
-		log.info("게시물번호 : "+board.getBoardId());
+		boardMapper.insertSelectKey(board); //tbl_board에 저장
+		log.info("게시물번호 : "+board.getBoardId()); // 등록한 게시물 번호 가져옴
 		
-		book.setBoardId(board.getBoardId());
+		book.setBoardId(board.getBoardId()); // boardId 설정
 		
-		bookMapper.insert(book);
+		bookMapper.insert(book); // tbl_book에 저장
 		
 		log.info("등록완료");
 		
@@ -84,9 +84,11 @@ public class BoardServiceImpl implements BoardService {
 	public boolean remove(Long boardId) {
 		log.info("글 삭제");
 		//자식 테이블 먼저 삭제
-		boolean result = replyMapper.deleteAll(boardId)>0 && bookMapper.delete(boardId) == 1 && boardMapper.delete(boardId) == 1;
+		replyMapper.deleteAll(boardId); //댓글삭제
+		bookMapper.delete(boardId); // 책삭제
+		boardMapper.delete(boardId); // 게시글 삭제
 		
-		return result;
+		return true;
 	}
 
 	@Override
@@ -96,9 +98,10 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public boolean favoriteCheck(String userid, Long bookId) {
+	public boolean favoriteCheck(String userid, String url) {
 		log.info("좋아요 체크");
-		int count = favoriteMapper.prevent_dup(userid, bookId);
+		
+		int count = favoriteMapper.prevent_dup(userid, url);
 		if(count > 0) { // 좋아요를 누른 상태이면
 			log.info("좋아요 눌림");
 			return true;
@@ -111,7 +114,8 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public boolean favoriteRemove(FavoriteVO vo) {
 		log.info("좋아요 제거");
-		int result = favoriteMapper.delete(vo);
+		Long favoriteId = favoriteMapper.get(vo.getUserid(), vo.getUrl());
+		int result = favoriteMapper.delete(favoriteId);
 		return result == 1 ? true : false;
 	}
 

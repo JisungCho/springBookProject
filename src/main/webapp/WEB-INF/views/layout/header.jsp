@@ -1,7 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-
+<!-- 양식 다시 제출확인 처리 -->
+<%  
+response.setHeader("Cache-Control","no-store");  
+response.setHeader("Pragma","no-cache");  
+response.setDateHeader("Expires",0);  
+if (request.getProtocol().equals("HTTP/1.1"))
+        response.setHeader("Cache-Control", "no-cache");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,7 +64,7 @@
 <script type="text/javascript">
 	$(document).ready(function(e){
 		
-		$("#logout").on("click", function(e) {
+		$("#logout").on("click", function(e) { //토큰 전달과 로그아웃 처리
 			e.preventDefault();
 			console.log("로그아웃");
 			alert("로그아웃 되었습니다");
@@ -68,7 +75,7 @@
 			$("#headerForm").submit();
 		});
 		
-		$("#myboard").on("click",function(e){
+		$("#myboard").on("click",function(e){ //내글 목록 클릭 시 토큰 전달과 내글 목록으로 이동
 			e.preventDefault();
 			var str ='<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">';
 			$("#headerForm").append(str);
@@ -77,7 +84,7 @@
 			$("#headerForm").submit();
 		});
 		
-		$("#myfavorite").on("click", function(e) {
+		$("#myfavorite").on("click", function(e) { // 북마크 이동
 			e.preventDefault();
 			console.log("즐겨찾기");
 			var str ='<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">';
@@ -87,7 +94,7 @@
 			$("#headerForm").submit();
 		});
 		
-		$("#myinfo").on("click", function(e) {
+		$("#myinfo").on("click", function(e) { // 내 정보 수정으로 이동
 			e.preventDefault();
 			console.log("내 정보");
 			var str ='<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">';
@@ -127,7 +134,7 @@
         	<a class="p-2 text-muted" href="/board/register">글쓰기</a>
           	<a class="p-2 text-muted" id="myinfo" href="#">내 정보 수정</a>
 			<a class="p-2 text-muted" id="myboard" href="#">내 글 목록</a>
-			<a class="p-2 text-muted" id="myfavorite" href="#">즐겨찾기</a>
+			<a class="p-2 text-muted" id="myfavorite" href="#">북마크</a>
         </nav>
        </sec:authorize>
        <form id="headerForm">

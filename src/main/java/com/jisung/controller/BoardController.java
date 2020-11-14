@@ -50,30 +50,27 @@ public class BoardController {
 	}
 
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/register")
-	public void register() {
-		log.info("글 등록 접근");
+	@GetMapping("/register") 
+	public void register() { //글 등록 페이지로 이동
+		log.info("글 등록 페이지 이동");
 	}
 
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/register")
 	public String register(BoardVO board, BookVO book, RedirectAttributes rttr) {
-		log.info("상품등록처리");
+		log.info("글 등록처리");
+		
+		boardService.register(board, book); // 글 등록
 
-		boardService.register(board, book);
-
-		log.info(board);
-		log.info(book);
-
-		rttr.addFlashAttribute("result", board.getBoardId());
+		rttr.addFlashAttribute("result", board.getBoardId()); //게시물번호를 결과로 전달
 
 		return "redirect:/board/";
 	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/bookSearch")
-	public void bookSearch() {
-		log.info("북 검색페이지");
+	public void bookSearch() { //책 검색 페이지로 이동
+		log.info("책 검색페이지");
 
 	}
 	
@@ -85,14 +82,14 @@ public class BoardController {
 		
 		model.addAttribute("board", vo); // get.jsp에 게시물 넘겨줌
 		
-		//좋아요 눌려있는지 체크
+		
+		//## 좋아요 눌림 체크
 		if(auth != null) { // 로그인이 되어있는 상태이면
-			//해당 글의 bookId
-			Long bookId = vo.getBook().getBookId();
-			UserDetails userDetails = (UserDetails) auth.getPrincipal();
-			String userid = userDetails.getUsername(); //해당 유저의 아이디
-	
-			boolean result = boardService.favoriteCheck(userid, bookId); //좋아요를 누른 상태이면 true 아니면 false
+			//해당 글의 boardId로 해당 글의 url을 가져옴 
+			String url = vo.getBook().getUrl();
+			UserDetails userDetails = (UserDetails) auth.getPrincipal(); // 현재 로그인한 유저
+			String userid = userDetails.getUsername(); //로그인한 유저의 아이디
+			boolean result = boardService.favoriteCheck(userid, url); //좋아요를 누른 상태이면 true 아니면 false
 			model.addAttribute("favorite", result);
 		}else { // 로그인이 안되어있는 상태라면 무조건 false
 			model.addAttribute("favorite", false);
@@ -100,26 +97,30 @@ public class BoardController {
 		
 	}
 	
-	@GetMapping({"/modify"})
+	@GetMapping("/modify")
 	@PreAuthorize("isAuthenticated()")
-	public void getmodify(Long boardId, Model model, @ModelAttribute("cri") Criteria cri) {
+	public void getmodify(Long boardId, Model model, @ModelAttribute("cri") Criteria cri) { //게시물 번호로 해당 게시물 가져옴
 		log.info("boardId : " + boardId);
 		log.info("pageNum : " + cri.getPageNum());
 		log.info("amount : " + cri.getAmount());
+		log.info("type : "+cri.getType());
+		log.info("keyword : "+cri.getKeyword());
+		
 		BoardVO vo = boardService.get(boardId);
 		log.info(vo);
 		model.addAttribute("board", vo);
+		//cri와 BoardVO가 modify.jsp로 전달
 	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify")
-	public String modify(BoardVO board,BookVO book,Criteria cri,RedirectAttributes rttr) {
+	public String modify(BoardVO board,BookVO book,Criteria cri,RedirectAttributes rttr) { //게시글 수정 작업
 		log.info("update.."+board);
 		log.info("update.."+book);
 		log.info("update.."+cri);
 		
 		
-		if(boardService.modify(board, book)) {
+		if(boardService.modify(board, book)) { //게시글이 수정되면 result라는 이름으로 success라는 메세지 전송 
 			rttr.addFlashAttribute("result", "success");
 		}
 		rttr.addAttribute("pageNum", cri.getPageNum());
@@ -133,11 +134,10 @@ public class BoardController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/remove")
-	public String remove(Long boardId,Criteria cri,RedirectAttributes rttr) {
+	public String remove(Long boardId,Criteria cri,RedirectAttributes rttr) { //게시글 제거
 		log.info("remove.."+boardId);
 		log.info("remove.."+cri);
 
-		
 		
 		if(boardService.remove(boardId)) {
 			rttr.addFlashAttribute("result", "success");
@@ -153,7 +153,7 @@ public class BoardController {
 	@PreAuthorize("isAuthenticated()")
 	@ResponseBody
 	@PostMapping(value = "/favorite")
-	public ResponseEntity<String> addFavorite(@RequestBody FavoriteVO vo){
+	public ResponseEntity<String> addFavorite(@RequestBody FavoriteVO vo){ //좋아요 등록
 		try {
 			vo.setUserid(URLDecoder.decode(vo.getUserid(), "utf-8"));
 		} catch (UnsupportedEncodingException e) {
@@ -162,13 +162,15 @@ public class BoardController {
 		}
 
 		System.out.println("Favorite : "+vo);
+		
 		boardService.favoriteRegister(vo);
+		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@ResponseBody
-	@PostMapping(value = "/unFavorite")
+	@PostMapping(value = "/unFavorite") //좋아요 제거
 	public ResponseEntity<Boolean> deleteFavorite(@RequestBody FavoriteVO vo){
 		try {
 			vo.setUserid(URLDecoder.decode(vo.getUserid(), "utf-8"));
@@ -177,6 +179,7 @@ public class BoardController {
 			e.printStackTrace();
 		}
 		System.out.println("Favorite : "+vo);
+		
 		boolean result = boardService.favoriteRemove(vo);
 		return new ResponseEntity<Boolean>(result, HttpStatus.OK);
 	}

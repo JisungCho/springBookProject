@@ -39,11 +39,9 @@ public class CommonController {
 		model.addAttribute("msg","Access Denied");
 	}
 	
-	@GetMapping("/customLogin")
+	@GetMapping("/customLogin") //로그인 페이지 이동
 	public void loginInput(String error,String logout,Model model) {
-		log.info("error: "+error);
-		log.info("logout: "+logout);
-		
+
 		if(error != null) {
 			model.addAttribute("error","Login Error Check Your Account");
 		}
@@ -53,16 +51,16 @@ public class CommonController {
 		}
 	}
 	
-	@GetMapping("/join")
+	@GetMapping("/join") // 회원가입 페이지 이동
 	public String joinForm() {
 		log.info("Join");
 		return "customJoin";
 	}
 	
-	@PostMapping("/join")
+	@PostMapping("/join") //회원가입
 	public String join(MemberVO member, AuthVO auth,RedirectAttributes rttr) {
 		  BCryptPasswordEncoder newPw = new BCryptPasswordEncoder();
-		  String pw = newPw.encode(member.getUserpw()); 
+		  String pw = newPw.encode(member.getUserpw()); //암호화된 비밀번호로 바꿈
 		  member.setUserpw(pw);
 		  auth.setUserid(member.getUserid());
 		  
@@ -70,7 +68,7 @@ public class CommonController {
 		 log.info("auth "+auth);
 			
 		  
-		memberService.join(member, auth);
+		memberService.join(member, auth);//회원 등록처리
 		  
 		rttr.addFlashAttribute("result","success");
 

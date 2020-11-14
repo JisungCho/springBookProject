@@ -34,11 +34,12 @@
 		var bookResult = $("#bookResult");
 		var pageNumber = 1;
 		
-		$("#kakaoBook").on("click", function(e) {
+		$("#kakaoBook").on("click", function(e) { //검색버튼 클릭
 			var bookName = $('input[name="bookName"]').val();
 			var str ="";
 			var pageNumber = 1;
 			
+			//검색 결과로 책 목록을 가져와서 화면에 보여줌
 			bookService.search(bookName, function(result) {
 				for(var i=0;i<result.documents.length;i++){
 				str += '<div id="bookCard'+i+'" class="card" style="max-width: 500px;">';
@@ -61,13 +62,13 @@
 				}
 				
 								
-				if (pageNumber == 1) {
+				if (pageNumber == 1) { //첫번째 페이지이면 Prevoius 버튼  disable
 					str += '<ul class="pagination justify-content-center"><li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>';
-				} else{
+				} else{ 
 					str += '<ul class="pagination justify-content-center"><li id="prev" data-page="1" class="page-item"><a class="page-link" href="#">Previous</a></li>'
 				}
 				
-				if(result.meta.is_end){
+				if(result.meta.is_end){ // 마지막 페이지이면 Next 버튼 disable
 					str += '<li class="page-item disabled"><a class="page-link" href="#">Next</a></li></ul>'
 				}else{
 					str += '<li id="next" data-page="1" class="page-item"><a class="page-link" href="#">Next</a></li></ul>';
@@ -79,19 +80,20 @@
 		$("#bookResult").on("click","button",function(e){
 			var cardNumber = $(this).data("number");
 			console.log(cardNumber); 	
-			window.opener.getReturnValue($("#bookCard"+cardNumber).clone()); 
+			window.opener.getReturnValue($("#bookCard"+cardNumber).clone()); //부모창에 해당 책의 div를 넘겨줌 (아이디가 bookCard숫자)
+			// getReturnValue() 메소드에서는 선택버튼을 제거하고 부모창에 html을 추가해줌
 			window.close(); 
 		});
 		
-		$("#bookResult").on("click","li",function(e){
+		$("#bookResult").on("click","li",function(e){ //페이지 번호 클릭시 페이지 이동
 			var bookName = $('input[name="bookName"]').val();
 			var str = "";
 			
-			if($(this).attr("id")==="next"){
-				pageNumber += 1;
+			if($(this).attr("id")==="next"){ // next버튼 클릭
+				pageNumber += 1; // 페이지 번호 1 증가
 				console.log("next");
 				
-				bookService.page(bookName,pageNumber,function(result){
+				bookService.page(bookName,pageNumber,function(result){ // 다음 페이지에대한 북 리스트를 가져옴
 					for(var i=0;i<result.documents.length;i++){
 						str += '<div id="bookCard'+i+'" class="card" style="max-width: 500px;">';
 								str += '<div class="row no-gutters">';
@@ -114,13 +116,13 @@
 						
 						
 						
-						if (pageNumber == 1) {
+						if (pageNumber == 1) { //첫번째 페이지이면 Prevoius 버튼  disable
 							str += '<ul class="pagination justify-content-center"><li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>';
 						} else{
 							str += '<ul class="pagination justify-content-center"><li id="prev" class="page-item"><a class="page-link" href="#">Previous</a></li>'
 						}
 						
-						if(result.meta.is_end){
+						if(result.meta.is_end){ // 마지막 페이지이면 Next 버튼 disable
 							str += '<li class="page-item disabled"><a class="page-link" href="#">Next</a></li></ul>'
 						}else{
 							str += '<li id="next" class="page-item"><a class="page-link" href="#">Next</a></li></ul>';
@@ -129,11 +131,11 @@
 						console.log("현재페이지 : "+pageNumber);
 						bookResult.html(str);	
 				});
-			}else if($(this).attr("id")==="prev"){
-				pageNumber -= 1;
+			}else if($(this).attr("id")==="prev"){ //previous버튼 클릭시 이전 페이지로 이동
+				pageNumber -= 1; // 페이지번호 1감소
 				console.log("prev");
 				
-				bookService.page(bookName,pageNumber,function(result){
+				bookService.page(bookName,pageNumber,function(result){ // 이전 페이지에대한 북 리스트 가져옴
 					for(var i=0;i<result.documents.length;i++){
 						str += '<div id="bookCard'+i+'" class="card" style="max-width: 500px;">';
 								str += '<div class="row no-gutters">';
@@ -156,13 +158,13 @@
 						
 						
 						
-						if (pageNumber == 1) {
+						if (pageNumber == 1) {//첫번째 페이지이면 Prevoius 버튼  disable
 							str += '<ul class="pagination justify-content-center"><li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>';
 						} else{
 							str += '<ul class="pagination justify-content-center"><li id="prev" class="page-item"><a class="page-link" href="#">Previous</a></li>'
 						}
 						
-						if(result.meta.is_end){
+						if(result.meta.is_end){// 마지막 페이지이면 Next 버튼 disable
 							str += '<li class="page-item disabled"><a class="page-link" href="#">Next</a></li></ul>'
 						}else{
 							str += '<li id="next" class="page-item"><a class="page-link" href="#">Next</a></li></ul>';
