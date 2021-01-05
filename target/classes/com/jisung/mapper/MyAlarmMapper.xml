@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jisung.mapper.MyAlarmMapper">
+	<insert id="insert">
+		<![CDATA[
+			insert into tbl_MyAlarm(alarmId,receiverId,callerId,content,checked) values(seq_myalarm.nextval,#{receiverId},#{callerId},#{content},'0')
+		]]>
+	</insert>
+	
+	<select id="getMyAlarm" resultType="com.jisung.domain.MyAlarm">
+		<![CDATA[
+			select * from tbl_myalarm where receiverid = #{receiverId} order by alarmid desc
+		]]>
+	</select>
+	
+	<select id="countMyAlarm" resultType="int">
+		<![CDATA[
+			select count(checked) from tbl_myalarm where receiverid = #{receiverId} and checked = 0
+		]]>
+	</select>	
+</mapper>

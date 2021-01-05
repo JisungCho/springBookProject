@@ -293,6 +293,11 @@
 		
 		//글 등록 버튼 클릭시
 		modalRegisterBtn.on("click", function() {
+			//댓글 등록자
+			var callerId = modalInputReplyer.val();
+			var receiverId = "${board.writer }";
+			var content = callerId + "님이 <a type='external' href='/board/get?pageNumber=1&boardId="+boardId+"'>" + boardId + "</a>번 글에 댓글을 달았습니다.";
+			
 			var data = {
 					reply:modalInputReply.val(),
 					replyer:modalInputReplyer.val(),
@@ -302,6 +307,31 @@
 						alert(result);
 						modal.find("input").val("");
 						modal.modal("hide");
+						//알람설정 2020-12-27
+						//알람 DB에 저장
+						var AlarmData = {
+								receiverId : receiverId,
+								callerId : callerId,
+								content : content
+						};
+						$.ajax({
+							type : 'post',
+							url : '/alarm/saveAlarm',
+							data : JSON.stringify(AlarmData),
+							contentType: "application/json; charset=utf-8",
+							dataType : 'text',
+							success : function(data){
+								if(socket){
+									let socketMsg = "reply," +receiverId  +","+ callerId +","+boardId;
+									console.log("msg : " + socketMsg);
+									socket.send(socketMsg);
+								}
+					 
+							},
+							error : function(err){
+								console.log(err);
+							}
+						});
 						showList(-1);//등록 시 마지막 페이지로 이동
 			});
 		});

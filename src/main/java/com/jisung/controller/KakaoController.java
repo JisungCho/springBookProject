@@ -1,6 +1,10 @@
 package com.jisung.controller;
 
 import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,8 +29,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jisung.domain.AuthVO;
 import com.jisung.domain.KaKaoProfile;
 import com.jisung.domain.MemberVO;
+import com.jisung.domain.MyAlarm;
 import com.jisung.domain.OAuthToken;
 import com.jisung.service.MemberService;
+import com.jisung.service.MyAlarmService;
 
 import lombok.extern.log4j.Log4j;
 
@@ -36,6 +42,9 @@ public class KakaoController {
 	@Autowired
 	private MemberService memberService;
 	
+	@Autowired
+	MyAlarmService myAlarmService;
+	
 	String tempPwd = "1234";
 	String userid;
 	
@@ -44,7 +53,7 @@ public class KakaoController {
 	private AuthenticationManager authenticationManager;
 	
 	@GetMapping("/kakao")
-	public String home(String code,MemberVO member,AuthVO auth){
+	public String home(String code,MemberVO member,AuthVO auth,HttpServletRequest request){
 		//#############################토큰요청
 		//여기서 POST 방식으로 key-value타입의 데이터를 요청 (카카오쪽으로)
 		//이때 RestTemplate 라이브러리 사용
@@ -140,6 +149,18 @@ public class KakaoController {
 		//로그인처리
 		Authentication authentication 	= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId(), tempPwd));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		List<MyAlarm> myAlarmList = myAlarmService.getMyAlarm(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId());
+		log.info("알람목록 : " +myAlarmList);
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("myAlarmList",myAlarmList);
+		if(myAlarmService.countMyAlarm(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId()) > 0) {
+			session.setAttribute("alarmBell", true);
+		}else {
+			session.setAttribute("alarmBell", false);
+		}
+		
 		return "redirect:/";
 	}
 }

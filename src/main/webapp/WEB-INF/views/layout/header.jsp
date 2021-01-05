@@ -23,6 +23,11 @@ if (request.getProtocol().equals("HTTP/1.1"))
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300&display=swap" rel="stylesheet">
+<!-- 소켓라이브러리 -->
+<!-- 로그인되어있는 경우에만 소켓연결 -->
+<sec:authorize access="isAuthenticated()">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+</sec:authorize>
 <style>
 *{
 	font-family: 'Noto Sans KR', sans-serif;
@@ -40,26 +45,29 @@ if (request.getProtocol().equals("HTTP/1.1"))
 .blog-header-logo:hover {
   text-decoration: none;
 }
-.nav-scroller {
-  position: relative;
-  z-index: 2;
-  height: 2.75rem;
-  overflow-y: hidden;
+
+
+
+.alert_list{
+	font-size: 11px; color:grey;
 }
 
-.nav-scroller .nav {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: nowrap;
-  flex-wrap: nowrap;
-  padding-bottom: 1rem;
-  margin-top: -1px;
-  overflow-x: auto;
-  text-align: center;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
+.alert_li {
+  font-size: 11px; 
+  color:grey;
+  padding:10px 0px 2px 0px;
+  border-bottom: thin solid #c0c0c0;
 }
+
+.alert_li:hover{background-color:#eee;}
+
+.turn_off_alert{
+	float:right;
+	margin-bottom :1px;
+	color:red;
+}
+
+
 </style>
 <script type="text/javascript">
 	$(document).ready(function(e){
@@ -104,8 +112,19 @@ if (request.getProtocol().equals("HTTP/1.1"))
 			$("#headerForm").submit();
 		});
 		
+		$("#news").popover({
+			  'title' : '알람목록', 
+			  'html' : true,
+			  'placement' : 'bottom',
+			  'content' : $(".alert_list").html()
+		});
+		$(document).on("click",".alert_li",function(e){
+			e.preventDefault();
+			console.log("wow");
+		});
 	})
 </script>
+<script type="text/javascript" src="/resources/js/index.js"></script>
 </head>
 <body>
 <div class="container">
@@ -115,10 +134,28 @@ if (request.getProtocol().equals("HTTP/1.1"))
           	<sec:authorize access="isAnonymous()">
             	<a class="btn btn-sm btn-outline-secondary" href="/join">회원가입</a>
 			</sec:authorize>
+			<sec:authorize access="isAuthenticated()">
+				<!-- 만약에 checked가 false인게 하나라도 있으면 알림표시의 벨이고 checked가 모두 true이면 그냥 벨 모양 -->
+ 				<c:if test="${sessionScope.alarmBell == false }">
+					<a class="p-2 text-muted" id="news" href="#"><i class="fa fa-bell-o"></i></a>
+				</c:if>
+				<c:if test="${sessionScope.alarmBell == true }">
+					<a class="p-2 text-muted" id="news" href="#"><i class="fa fa-bell"></i></a>
+				</c:if> 
+				<div style="display:none" class="alert_list">
+				  <ul class="list-unstyled">
+				   <c:forEach items="${sessionScope.myAlarmList}" var="alarm">
+					   	<li data-alert_id="${alarm.alarmId }" class="alert_li">
+					    	${alarm.content}
+					    </li>
+				   </c:forEach>				    
+				  </ul>
+				</div>
+		    </sec:authorize> 
           </div>
           <div class="col-4 text-center">
             <a class="blog-header-logo text-dark" href="/board/"><img src="../resources/img/logo.png" alt="Logo"></a>
-          </div>
+          </div>  
           <div class="col-4 d-flex justify-content-end align-items-center">
           	<sec:authorize access="isAnonymous()">
             	<a class="btn btn-sm btn-outline-secondary" href="/customLogin">로그인</a>
@@ -129,6 +166,7 @@ if (request.getProtocol().equals("HTTP/1.1"))
           </div>
         </div>
       </header>
+      <!-- 로그인 상태-->
 	  <sec:authorize access="isAuthenticated()">
         <nav class="nav d-flex justify-content-between">
         	<a class="p-2 text-muted" href="/board/register">글쓰기</a>
@@ -138,5 +176,22 @@ if (request.getProtocol().equals("HTTP/1.1"))
         </nav>
        </sec:authorize>
        <form id="headerForm">
-	   </form>			
+	   </form>
+		<!-- Modal -->
+		<div class="modal fade" id="alarmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">Alarm</h4>
+					</div>
+					<div id="alarm-body" class="modal-body"></div>
+					<div class="modal-footer">
+						<button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->			
 </div>

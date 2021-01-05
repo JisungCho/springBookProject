@@ -9,9 +9,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
-	<!-- Root Context: defines shared resources visible to all other web components -->
-	<context:annotation-config></context:annotation-config>
-	
+	<!-- 특정 패키지 내의 클래스를 스캔하고 Annotation(@Component @Controller @Service @Repository)을 확인한 후 Bean 인스턴스로 생성 -->
 	<context:component-scan base-package="com.jisung.service"></context:component-scan>
 	
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
@@ -27,6 +25,7 @@
 		<constructor-arg ref="hikariConfig"></constructor-arg>
 	</bean>
 	
+	<!-- myBatis 중앙 제어 도구 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 			<property name="dataSource" ref="dataSource"></property>
 	</bean>
@@ -40,5 +39,5 @@
 	<mybatis-spring:scan base-package="com.jisung.mapper"/>
 
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
-	<mvc:annotation-driven></mvc:annotation-driven>
+	<!-- <mvc:annotation-driven></mvc:annotation-driven> -->
 </beans>
