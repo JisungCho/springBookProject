@@ -47,4 +47,8 @@
 		SELECT COUNT(*) FROM tbl_member
 		WHERE USERID = #{userid}
 	</select>
+	
+	<select id="memberCount" resultType="int">
+		select count(*) from tbl_member INNER join tbl_member_auth on tbl_member.userid = tbl_member_auth.userid where auth=#{role}
+	</select>
 </mapper>

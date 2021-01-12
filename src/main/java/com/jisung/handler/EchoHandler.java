@@ -67,6 +67,7 @@ public class EchoHandler extends TextWebSocketHandler {
 	//2020-12-30 : socket으로 보낸 메세지 처리
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+		//socket.send한 내용을 받음
 		String msg = message.getPayload();
 		System.out.println(msg);
 		//msg가 비어있지 않으면

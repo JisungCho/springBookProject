@@ -291,7 +291,7 @@
 			$("#myModal").modal("show");
 		});
 		
-		//글 등록 버튼 클릭시
+		//댓글 등록 버튼 클릭시
 		modalRegisterBtn.on("click", function() {
 			//댓글 등록자
 			var callerId = modalInputReplyer.val();
@@ -308,30 +308,35 @@
 						modal.find("input").val("");
 						modal.modal("hide");
 						//알람설정 2020-12-27
-						//알람 DB에 저장
-						var AlarmData = {
-								receiverId : receiverId,
-								callerId : callerId,
-								content : content
-						};
-						$.ajax({
-							type : 'post',
-							url : '/alarm/saveAlarm',
-							data : JSON.stringify(AlarmData),
-							contentType: "application/json; charset=utf-8",
-							dataType : 'text',
-							success : function(data){
-								if(socket){
-									let socketMsg = "reply," +receiverId  +","+ callerId +","+boardId;
-									console.log("msg : " + socketMsg);
-									socket.send(socketMsg);
+						//알람 DB에 저장 
+						
+						
+						//만약에 현재로그인한 사람과 댓글을 다는 사람이 같으면 알람db에 저장하지 않음
+						if(replyer != receiverId){
+							var AlarmData = {
+									receiverId : receiverId,
+									callerId : callerId,
+									content : content
+							};
+							$.ajax({
+								type : 'post',
+								url : '/alarm/saveAlarm',
+								data : JSON.stringify(AlarmData),
+								contentType: "application/json; charset=utf-8",
+								dataType : 'text',
+								success : function(data){
+									if(socket){
+										let socketMsg = "reply," +receiverId  +","+ callerId +","+boardId;
+										console.log("msg : " + socketMsg);
+										socket.send(socketMsg);
+									}
+						 
+								},
+								error : function(err){
+									console.log(err);
 								}
-					 
-							},
-							error : function(err){
-								console.log(err);
-							}
-						});
+							});
+						}
 						showList(-1);//등록 시 마지막 페이지로 이동
 			});
 		});

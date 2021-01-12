@@ -36,4 +36,10 @@ public class MyAlarmServiceImpl implements MyAlarmService {
 		return myAlarmMapper.countMyAlarm(receiverId);
 	}
 
+	@Override
+	public void updateChecked(String receiverId) {
+		log.info("checked true 설정");
+		myAlarmMapper.updateChecked(receiverId);
+	}
+
 }

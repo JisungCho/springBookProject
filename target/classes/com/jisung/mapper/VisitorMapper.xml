@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jisung.mapper.VisitorMapper">
+	<!-- 오늘 방문자 수 추가 -->
+	<insert id="insert">
+		<![CDATA[
+			insert into tbl_Visitor(v_date) values(sysdate)
+		]]>
+	</insert>
+	<select id="selectToday" resultType="int">
+		<![CDATA[
+			select count(*) from tbl_visitor where to_char( v_date, 'yyyymmdd' ) = to_char( sysdate, 'yyyymmdd')
+		]]>
+	</select>
+	<select id="selectYesterday" resultType="int">
+		<![CDATA[
+			select count(*) from tbl_visitor where to_char( v_date, 'yyyymmdd' ) = to_char( sysdate-1, 'yyyymmdd')
+		]]>
+	</select>
+	
+	<select id="selectTwoDaysAgo" resultType="int">
+		<![CDATA[
+			select count(*) from tbl_visitor where to_char( v_date, 'yyyymmdd' ) = to_char( sysdate-2, 'yyyymmdd')
+		]]>
+	</select>
+
+</mapper>

@@ -24,5 +24,9 @@ public interface BoardMapper {
 	
 	public int delete(Long boardId); //업데이트
 	
+	//날짜별 게시물 수 
+	public int selectToday();
+	public int selectYesterday();
+	public int selectTwoDaysAgo();
 	
 }

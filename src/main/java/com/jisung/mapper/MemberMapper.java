@@ -7,4 +7,5 @@ public interface MemberMapper {
 	public int insert(MemberVO vo);
 	public int update(MemberVO vo);
 	public int checkId(String userid);
+	public int memberCount(String role);
 }

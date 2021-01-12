@@ -116,6 +116,22 @@
 	<delete id="delete">
 		delete from tbl_board where boardid = #{boardId}
 	</delete>
-
+	<!-- 날짜별 게시물 수 -->
+	<select id="selectToday" resultType="int">
+		<![CDATA[
+			select count(*) from tbl_board where to_char( regdate, 'yyyymmdd' ) = to_char( sysdate, 'yyyymmdd')
+		]]>
+	</select>
+	<select id="selectYesterday" resultType="int">
+		<![CDATA[
+			select count(*) from tbl_board where to_char( regdate, 'yyyymmdd' ) = to_char( sysdate-1, 'yyyymmdd')
+		]]>
+	</select>
+	
+	<select id="selectTwoDaysAgo" resultType="int">
+		<![CDATA[
+			select count(*) from tbl_board where to_char( regdate, 'yyyymmdd' ) = to_char( sysdate-2, 'yyyymmdd')
+		]]>
+	</select>
 	
 </mapper>

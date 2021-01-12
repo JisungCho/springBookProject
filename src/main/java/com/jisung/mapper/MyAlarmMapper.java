@@ -8,4 +8,5 @@ public interface MyAlarmMapper {
 	public int insert(MyAlarm myAlarm);
 	public List<MyAlarm> getMyAlarm(String receiverId);
 	public int countMyAlarm(String receiverId);
+	public void updateChecked(String receiverId);
 }

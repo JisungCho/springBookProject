@@ -150,15 +150,16 @@ public class KakaoController {
 		Authentication authentication 	= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId(), tempPwd));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
-		List<MyAlarm> myAlarmList = myAlarmService.getMyAlarm(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId());
-		log.info("알람목록 : " +myAlarmList);
-		
+		//로그인한 회원에게 새로운 알림이 있는지 확인
 		HttpSession session = request.getSession();
-		session.setAttribute("myAlarmList",myAlarmList);
+		int count = myAlarmService.countMyAlarm(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId());
+	
 		if(myAlarmService.countMyAlarm(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId()) > 0) {
-			session.setAttribute("alarmBell", true);
+			log.info("알람 있음");
+			session.setAttribute("count",count);
 		}else {
-			session.setAttribute("alarmBell", false);
+			log.info("알람 없음");
+			session.setAttribute("count", 0);
 		}
 		
 		return "redirect:/";

@@ -19,5 +19,9 @@
 		<![CDATA[
 			select count(checked) from tbl_myalarm where receiverid = #{receiverId} and checked = 0
 		]]>
-	</select>	
+	</select>
+	
+	<update id="updateChecked">
+		update tbl_myalarm set checked = '1' where receiverId = #{receiverId}
+	</update>	
 </mapper>

@@ -45,4 +45,11 @@ public class MemberServiceImpl implements MemberService{
 		}
 	}
 
+
+	@Override
+	public int MemberCount(String role) {
+		log.info("회원 수 구하기");
+		return memberMapper.memberCount(role);
+	}
+
 }

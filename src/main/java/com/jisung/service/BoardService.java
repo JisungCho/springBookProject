@@ -19,4 +19,9 @@ public interface BoardService {
 	public void favoriteRegister(FavoriteVO vo); // 좋아요 등록
 	public boolean favoriteCheck(String userid,String url); //좋아요 체크
 	public boolean favoriteRemove(FavoriteVO vo); //좋아요 제거
+	
+	//날짜별 게시물 수 
+	public int today();
+	public int yesterday();
+	public int twoDaysAgo();
 }

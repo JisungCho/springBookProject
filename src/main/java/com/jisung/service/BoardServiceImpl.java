@@ -119,6 +119,24 @@ public class BoardServiceImpl implements BoardService {
 		return result == 1 ? true : false;
 	}
 
+	@Override
+	public int today() {
+		log.info("오늘 게시물 수 ");
+		return boardMapper.selectToday();
+	}
+
+	@Override
+	public int yesterday() {
+		log.info("어제 게시물 수 ");
+		return boardMapper.selectYesterday();
+	}
+
+	@Override
+	public int twoDaysAgo() {
+		log.info("그제 게시물 수");
+		return boardMapper.selectTwoDaysAgo();
+	}
+
 
 
 }
