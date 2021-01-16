@@ -38,6 +38,4 @@
 	
 	<mybatis-spring:scan base-package="com.jisung.mapper"/>
 
-	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
-	<!-- <mvc:annotation-driven></mvc:annotation-driven> -->
 </beans>

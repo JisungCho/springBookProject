@@ -16,7 +16,7 @@ public interface BoardService {
 	public boolean modify(BoardVO board,BookVO book); // 게시물 수정
 	public boolean remove(Long boardId); //게시물 삭제
 	
-	public void favoriteRegister(FavoriteVO vo); // 좋아요 등록
+	public boolean favoriteRegister(FavoriteVO vo); // 좋아요 등록
 	public boolean favoriteCheck(String userid,String url); //좋아요 체크
 	public boolean favoriteRemove(FavoriteVO vo); //좋아요 제거
 	

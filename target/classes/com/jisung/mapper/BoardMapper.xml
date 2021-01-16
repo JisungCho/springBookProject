@@ -6,9 +6,10 @@
 		<!--prefix : 접두사 -->
 		<!--suffix : 접미사 -->
 		<!-- prefixOverrides : 하위 엘레먼트가 생성한 내용의 맨앞에 해당하는 문자가 있으면 자동으로 지워줌 -->
-		<!--collection : 전달받은 인자값 , getTypeArr을 호출 -->
+		<!--collection : 전달받은 인자 ,list나 Array가 올 수 있음 -->
 	<sql id="criteria">
-	    <trim prefixOverrides="OR" suffix=") AND " prefix="(">
+	    <trim prefixOverrides="OR" prefix="(" suffix=") AND ">
+	    	<!-- typeArr과 이름이 같은 메소드 호출 -->
 	        <foreach collection="typeArr" item="type">
 	            <trim prefix="OR">
 	                <choose>
@@ -39,9 +40,7 @@
 		<result property="url" column="url" />
 	</resultMap>
 
-
-	<!-- <select id="list" resultType="com.jisung.domain.BoardVO"> select /*+INDEX_DESC(tbl_board pk_board)*/ * from tbl_board </select> -->
-
+	<!-- 객체에  -->
 	<select id="get" resultMap="boardVO">
 		SELECT board.boardid , subject , content, writer, regdate , bookId , thumbnail , title, authors ,url
 		FROM tbl_board board
@@ -56,7 +55,8 @@
 
 		insert into tbl_board(boardid,subject,content,writer) values(#{boardId},#{subject},#{content},#{writer})
 	</insert>
-
+	
+	<!-- 인덱스를 이용한 접근 시 ROWNUM은 1.PK_BOARD 인덱스를 통해서 테이블에 접근,  2.접근한 데이터에 ROWNUM 부여 -->
 	<select id="listWithPaging" resultType="com.jisung.domain.BoardVO">
 		<![CDATA[
 			select boardid,subject,content,writer,regdate
@@ -92,6 +92,7 @@
 		]]>
 	</select>
 
+	<!-- 게시물 갯수 구하기 -->
 	<select id="total" resultType="int">
 		<![CDATA[ 
 			select count(*) from tbl_board where 

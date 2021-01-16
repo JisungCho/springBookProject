@@ -18,8 +18,8 @@
 		]]>
 	</select>
 	
+	<!-- 같은 책이 있는지 중복확인 -->
 	<select id="prevent_dup" resultType="int">
-		<!-- 해당 유저 아이디로 해당 책에 좋아요를 눌렀는지 아닌지 확인  0보다 크면 좋아요가 눌린상태-->
 		select count(*) from tbl_favorite where userid = #{userid} and url = #{url}
 	</select>
 	

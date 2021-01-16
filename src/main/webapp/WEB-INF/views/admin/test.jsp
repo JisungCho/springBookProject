@@ -49,8 +49,8 @@
 			<hr class="sidebar-divider my-0">
 
 			<!-- Nav Item - Dashboard -->
-			<li class="nav-item"><a class="nav-link" href="/admin/"> <i class="fas fa-fw fa-chart-area"></i> <span>통계</span></a></li>
-			<li class="nav-item"><a class="nav-link" href="/admin/member"> <i class="fas fa-fw fa-table"></i> <span>회원관리</span></a></li>
+			<li class="nav-item active"><a class="nav-link" href="/admin/"> <i class="fas fa-fw fa-chart-area"></i> <span>통계</span></a></li>
+			<li class="nav-item"><a class="nav-link" href="/admin/boardList"> <i class="fas fa-fw fa-table"></i> <span>게시물관리</span></a></li>
 			<li class="nav-item"><a id="logout" class="nav-link" href="/logout"> <i class="fas fa-fw fa-sign-out-alt"></i> <span>로그아웃</span></a></li>
 
 			<!-- Divider -->

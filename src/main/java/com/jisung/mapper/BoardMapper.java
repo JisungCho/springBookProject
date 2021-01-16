@@ -16,7 +16,7 @@ public interface BoardMapper {
 	
 	public BoardVO get(Long boardId); //글 정보
 	
-	public int total(Criteria cri); //전체 글 갯수
+	public int total(Criteria cri); //전체 게시물 갯수
 	
 	public int myTotal(@Param("userid") String userid); // 내가 쓴 글 갯수
 	

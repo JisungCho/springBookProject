@@ -45,7 +45,8 @@ public class InfoController {
 	public String myBoard(Criteria cri,Model model,Authentication auth) { //내 글목록
 		log.info("내 글 목록");
 		UserDetails userDetails = (UserDetails) auth.getPrincipal();
-		String userid = userDetails.getUsername(); //현재 로그인한 회원
+		String userid = userDetails.getUsername(); //현재 로그인한 회원의 아이디
+		
 		log.info("총 게시물 수 : " + infoService.myTotal(userid)); // 로그인한 회원이 쓴 글의 갯수
 
 		List<BoardVO> myList = infoService.list(cri, userid); // 글쓴 목록 가져옴

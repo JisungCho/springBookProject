@@ -52,7 +52,7 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 	public List<BoardVO> list(Criteria cri) {
-		log.info("게시물 리스트 출력");
+		log.info("게시물 목록 가져오기");
 		log.info("get List with criteria : "+cri);
 		return boardMapper.listWithPaging(cri);
 	}
@@ -91,16 +91,12 @@ public class BoardServiceImpl implements BoardService {
 		return true;
 	}
 
-	@Override
-	public void favoriteRegister(FavoriteVO vo) {
-		log.info("좋아요 추가");
-		favoriteMapper.insert(vo);
-	}
 
 	@Override
 	public boolean favoriteCheck(String userid, String url) {
 		log.info("좋아요 체크");
 		
+		//현재 로그인한 유저아이디로 해당 책 url을 가지고 좋아요를 체크한 적이 있는지 확인
 		int count = favoriteMapper.prevent_dup(userid, url);
 		if(count > 0) { // 좋아요를 누른 상태이면
 			log.info("좋아요 눌림");
@@ -110,7 +106,14 @@ public class BoardServiceImpl implements BoardService {
 			return false;
 		}
 	}
-
+	
+	@Override
+	public boolean favoriteRegister(FavoriteVO vo) {
+		log.info("좋아요 추가");
+		int count = favoriteMapper.insert(vo);
+		return count == 1 ? true : false;
+	}
+	
 	@Override
 	public boolean favoriteRemove(FavoriteVO vo) {
 		log.info("좋아요 제거");

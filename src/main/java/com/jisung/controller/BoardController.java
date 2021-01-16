@@ -38,83 +38,93 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 	
+	//메인페이지
 	@GetMapping("/") 
 	public String list(Model model, Criteria cri) { //메인 화면 
-		log.info("메인화면");
+		log.info("메인 페이지");
 		log.info("총 게시물 수 : " + boardService.total(cri)); // 총 게시물 수 
 
-		List<BoardVO> boardList = boardService.list(cri); //페이징한 게시물 목록
-		model.addAttribute("list", boardList); // main.jsp에 전달
-		model.addAttribute("pageMaker", new PageDTO(cri, boardService.total(cri))); //총 게시물 수와 pageNum , amount 전달
+		List<BoardVO> boardList = boardService.list(cri); //페이징 처리한 게시물 목록
+		model.addAttribute("list", boardList); // 게시물목록을 list라는 이름으로 view에 전달할 것(검색조건이 있으면 처리)
+		model.addAttribute("pageMaker", new PageDTO(cri, boardService.total(cri))); //페이징 조건 전달
 		return "/board/main";
 	}
 
+	//글 등록 view로 이동
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/register") 
-	public void register() { //글 등록 페이지로 이동
+	public void register() { 
 		log.info("글 등록 페이지 이동");
 	}
 
+	//글 등록 처리
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/register")
 	public String register(BoardVO board, BookVO book, RedirectAttributes rttr) {
 		log.info("글 등록처리");
 		
-		boardService.register(board, book); // 글 등록
+		boardService.register(board, book); // DB에 글등록 처리
 
-		rttr.addFlashAttribute("result", board.getBoardId()); //게시물번호를 결과로 전달
+		rttr.addFlashAttribute("result", board.getBoardId()); // result라는 이름으로 등록한 게시물의 번호를 전달
 
 		return "redirect:/board/";
 	}
 	
+	//책 검색 view로 이동
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/bookSearch")
-	public void bookSearch() { //책 검색 페이지로 이동
+	public void bookSearch() { 
 		log.info("책 검색페이지");
 
 	}
 	
+	//게시물 상세조회 view로 이동
 	@GetMapping("/get")
 	public void get(Long boardId, Model model, @ModelAttribute("cri") Criteria cri,Authentication auth) { //게시물 상세조회
 		
-		BoardVO vo = boardService.get(boardId); // 해당 게시물 가져오기
-		log.info("상세조회 할 게시물 :"+vo);
+		BoardVO vo = boardService.get(boardId); // 게시물번호로 게시물 가져오기
+		log.info("상세조회 할 게시물 :"+vo); 
 		
-		model.addAttribute("board", vo); // get.jsp에 게시물 넘겨줌
+		model.addAttribute("board", vo); // board란 이름으로 해당 게시물정보를 전달
 		
-		
-		//## 좋아요 눌림 체크
-		if(auth != null) { // 로그인이 되어있는 상태이면
-			//해당 글의 boardId로 해당 글의 url을 가져옴 
+		//좋아요 눌림 체크
+		if(auth != null && auth.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) { 
+			//현재로그인이 되어있거나 권한이 Admin이 아니면
+			log.info("권한 있음");
+			
+			//해당 책의 url(카카오에서 제공해주는 책 상세정보)
 			String url = vo.getBook().getUrl();
 			UserDetails userDetails = (UserDetails) auth.getPrincipal(); // 현재 로그인한 유저
 			String userid = userDetails.getUsername(); //로그인한 유저의 아이디
-			boolean result = boardService.favoriteCheck(userid, url); //좋아요를 누른 상태이면 true 아니면 false
-			model.addAttribute("favorite", result);
+			boolean result = boardService.favoriteCheck(userid, url); // 같은 책이 있다면 true 없다면 false
+			model.addAttribute("favorite", result); 
 		}else { // 로그인이 안되어있는 상태라면 무조건 false
+			log.info("권한 없음");
 			model.addAttribute("favorite", false);
 		}
 		
 	}
 	
+	//수정 view
 	@GetMapping("/modify")
 	@PreAuthorize("isAuthenticated()")
 	public void getmodify(Long boardId, Model model, @ModelAttribute("cri") Criteria cri) { //게시물 번호로 해당 게시물 가져옴
+		//get페이지에서 가지고있던 cri정보들
 		log.info("boardId : " + boardId);
 		log.info("pageNum : " + cri.getPageNum());
 		log.info("amount : " + cri.getAmount());
 		log.info("type : "+cri.getType());
 		log.info("keyword : "+cri.getKeyword());
 		
-		BoardVO vo = boardService.get(boardId);
-		log.info(vo);
-		model.addAttribute("board", vo);
-		//cri와 BoardVO가 modify.jsp로 전달
+		BoardVO vo = boardService.get(boardId); //게시물 번호로 해당 게시물 정보를 가져옴
+		model.addAttribute("board", vo); // board란 이름으로 해당 게시물 정보를 전달 
+		//modify.jsp로 이동
 	}
 	
+	//게시글 수정 작업
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/modify")
-	public String modify(BoardVO board,BookVO book,Criteria cri,RedirectAttributes rttr) { //게시글 수정 작업
+	public String modify(BoardVO board,BookVO book,Criteria cri,RedirectAttributes rttr) { 
 		log.info("update.."+board);
 		log.info("update.."+book);
 		log.info("update.."+cri);
@@ -138,7 +148,7 @@ public class BoardController {
 		log.info("remove.."+boardId);
 		log.info("remove.."+cri);
 
-		
+		//글 제거
 		if(boardService.remove(boardId)) {
 			rttr.addFlashAttribute("result", "success");
 		}
@@ -150,36 +160,22 @@ public class BoardController {
 		return "redirect:/board/";
 	}
 	
+	//좋아요 등록
 	@PreAuthorize("isAuthenticated()")
 	@ResponseBody
 	@PostMapping(value = "/favorite")
-	public ResponseEntity<String> addFavorite(@RequestBody FavoriteVO vo){ //좋아요 등록
-		try {
-			vo.setUserid(URLDecoder.decode(vo.getUserid(), "utf-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		System.out.println("Favorite : "+vo);
-		
-		boardService.favoriteRegister(vo);
-		
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<Boolean> addFavorite(@RequestBody FavoriteVO vo){ 
+		log.info("좋아요 등록");
+		boolean result = boardService.favoriteRegister(vo);
+		return new ResponseEntity<Boolean>(result, HttpStatus.OK);
 	}
 	
+	//좋아요 삭제
 	@PreAuthorize("isAuthenticated()")
 	@ResponseBody
 	@PostMapping(value = "/unFavorite") //좋아요 제거
 	public ResponseEntity<Boolean> deleteFavorite(@RequestBody FavoriteVO vo){
-		try {
-			vo.setUserid(URLDecoder.decode(vo.getUserid(), "utf-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Favorite : "+vo);
-		
+		log.info("좋아요 제거");
 		boolean result = boardService.favoriteRemove(vo);
 		return new ResponseEntity<Boolean>(result, HttpStatus.OK);
 	}

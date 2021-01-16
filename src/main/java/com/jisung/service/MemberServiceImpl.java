@@ -29,6 +29,7 @@ public class MemberServiceImpl implements MemberService{
 		
 		log.info("회원가입");
 		
+		//member , auth에 저장
 		memberMapper.insert(member);
 		authMapper.insert(auth);
 	}

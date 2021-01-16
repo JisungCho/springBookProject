@@ -3,6 +3,8 @@
 <%@ include file="../layout/header.jsp"%>
 <div class="container">
 	<h1 class="font-weight-bold text-center py-2">독서노트</h1>
+	
+	<!-- 게시물 목록을 가져와서 게시물의 정보를 출력-->
 	<c:forEach items="${list}" var="list">
 		<div class="card m-2 bg-light text-dark">
 			<div class="card-header">
@@ -22,7 +24,6 @@
 	<!-- 검색창 -->
 	<div class="row">
 		<div class="col-lg-12">
-			<!-- type , keyword , pageNum , amount가 전송됨  -->
 			<form id="searchForm" action="/board/" method="get">
 				<div class="form-row align-items-center">
 					<div class="col-auto my-1">
@@ -45,7 +46,7 @@
 		</div>
 	</div>
 	
-	<!-- 게시물 상세 조회시 전송 -->
+	<!-- 게시물 상세 조회 ,페이지 이동시 사용 -->
 	<form id="actionForm" action="/board/get" method="get">
 		<input type="hidden" name="pageNum" value="${pageMaker.cri.pageNum }"> 
 		<input type="hidden" name="amount" value="${pageMaker.cri.amount }"> 
@@ -54,6 +55,7 @@
 		<input type="hidden" name="keyword" value="${pageMaker.cri.keyword }">
 	</form>
 	
+	<!-- PageDTO -->
 	<nav aria-label="Page navigation example">
 		<ul class="pagination justify-content-end">
 			<c:if test="${pageMaker.prev }">
@@ -67,6 +69,7 @@
 			</c:if>
 		</ul>
 	</nav>
+	
 </div>
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -88,14 +91,15 @@
 <!-- /.modal -->
 <script>
 	$(document).ready(function() { // main 페이지가 로딩되면
+			
+			//게시물 상세 조회시 작동
 			var actionForm = $("#actionForm");
-			//result가 전송되었으면 result 출력
+			//등록한 게시물의 번호
 			var result = '<c:out value="${result}"/>';
-			console.log("번호 : " + result);
 			checkModal(result);
 			history.replaceState({}, null, null);
 			
-			//전달된 result가 0보다 크면 modal의 내용을 바꿔주고나서 모달창을 보여줌
+			//등록된 게시물의 번호를 모달창으로 보여줌
 			function checkModal(result) {
 				if (result === '' || history.state) {
 					return;
@@ -106,25 +110,29 @@
 					$("#myModal").modal("show");
 			}
 
-			$(".page-link").on("click",function(e) { //페이지 번호 클릭 클릭시 다음 페이지로 이동
+			//페이지 번호 클릭 클릭시 다음 페이지로 이동
+			$(".page-link").on("click",function(e) { 
 				e.preventDefault(); 
 				console.log('paging');
-				//actionForm의 pageNum의 value값을 현재 눌린 <a>태그의 href의 값으로 설정
+				//actionForm의 pageNum의 value값을 현재 눌린 페이지 번호 값으로 바꿈
 				actionForm.find("input[name='pageNum']").val($(this).attr("href"));
+				// 게시글 목록으로 이동
 				actionForm.attr("action", "/board/");
 				actionForm.submit();
 			});
 
-			$(".card-body button").on("click",function(e) { //상세내용 클릭
+			//상세 내용 조회
+			$(".card-body button").on("click",function(e) { 
 				e.preventDefault();
 				console.log("detail");
+				//상세내용을 클릭 시 boardId가 actionForm에 추가되어 
 				actionForm.append("<input type='hidden' name='boardId' value='"+ $(this).data("number")+ "'/>");
-				//상세내용 버튼 클릭시 pageNum, amount , boardId를 /board/get으로 전송 
+				//상세내용 버튼 클릭시 현재 pageNum, amount,type,keyword,boardId를 /board/get으로 전송 
 				actionForm.submit();
 			});
-						
-			var searchForm = $('#searchForm'); //검색 조건
-						
+			
+			//검색 
+			var searchForm = $('#searchForm'); 
 			$("#searchForm button").on('click',function(e){ // 검색 버튼 클릭 시
 				e.preventDefault(); 
 				
@@ -137,6 +145,7 @@
 					alert("키워드를 입력하세요");
 					return false;
 				}
+					// /board/ 로 action
 					searchForm.submit();
 			});
 		})

@@ -30,16 +30,19 @@
 							</h6>
 							<br>
 							<!-- 좋아요 버튼 -->
-							<div id="favoriteBox">
-								<c:choose>
-									<c:when test="${favorite == false }">
-										<button id="likebtn" class="btn"><i class="fa fa-heart-o" style="font-size:30px;color:red"></i></button>
-									</c:when>
-									<c:when test="${favorite == true}">
-										<button id="unlikebtn" class="btn"><i class="fa fa-heart" style="font-size:30px;color:red"></i></button>
-									</c:when>
-								</c:choose>
-							</div>
+							<!-- Admin은 좋아요 버튼 안나오게 설정 -->
+							<sec:authorize access="!hasRole('ROLE_ADMIN')">
+								<div id="favoriteBox">
+									<c:choose>
+										<c:when test="${favorite == false }">
+											<button id="likebtn" class="btn"><i class="fa fa-heart-o" style="font-size:30px;color:red"></i></button>
+										</c:when>
+										<c:when test="${favorite == true}">
+											<button id="unlikebtn" class="btn"><i class="fa fa-heart" style="font-size:30px;color:red"></i></button>
+										</c:when>
+									</c:choose>
+								</div>
+							</sec:authorize>
 						</div>
 					</div>
 				</div>
@@ -163,12 +166,18 @@
 		var pageNum = 1; //페이지번호
 		var replyPageFooter = $(".card-footer"); //
 		
-	
+		// html entity 디코딩
+		function decodeHTMLEntities(text) { 
+			  var textArea = document.createElement('textarea');
+			  textArea.innerHTML = text;
+			  return textArea.value;
+		}
+		
 		var replyer = null;	
 		<sec:authorize access="isAuthenticated()">
 			replyer = '<sec:authentication property="principal.username"/>';
 			replyer = decodeHTMLEntities(replyer); // html entity decode
-			console.log(replyer);
+			console.log("replyer : "+replyer);
 		</sec:authorize>
 		
 		
@@ -184,12 +193,6 @@
 		var modalRegisterBtn = $("#modalRegisterBtn"); //등록버튼
 		var modalCloseBtn = $("#modalCloseBtn"); //닫기버튼
 		
-		// html entity 디코딩
-		function decodeHTMLEntities(text) { 
-			  var textArea = document.createElement('textarea');
-			  textArea.innerHTML = text;
-			  return textArea.value;
-		}
 		
 		//댓글목록 갱신
 		//page 번호가 -1 로 전달되면 마지막 페이지를 찾아서 다시 호출
@@ -447,8 +450,10 @@
 			 var authors = "${board.book.authors}";
 			 var url ="${board.book.url}";
 			 
+			 console.log(replyer);
+			 
 			 var data = {
-					 userid:encodeURIComponent(replyer),
+					 userid:replyer,
 					 thumbnail:thumbnail, 
 					 title :title,
 					 authors :authors,
@@ -466,10 +471,12 @@
 	             contentType : "application/json; charset=utf-8", 
 	             type:"post",
 	             success : function (result) {
-	             	alert("좋아요가 추가되었습니다.");
-	             	$("#favoriteBox").empty();
-	             	var str = '<button id="unlikebtn" class="btn"><i class="fa fa-heart" style="font-size:30px;color:red"></i></button>';
-	             	$("#favoriteBox").append(str);
+	            	if(result){
+		             	alert("좋아요가 추가되었습니다.");
+		             	$("#favoriteBox").empty();
+		             	var str = '<button id="unlikebtn" class="btn"><i class="fa fa-heart" style="font-size:30px;color:red"></i></button>';
+		             	$("#favoriteBox").append(str);	            		
+	            	}
 	             }
 	         });
 		 });
