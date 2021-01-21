@@ -3,24 +3,28 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jisung.mapper.MyAlarmMapper">
+	<!-- 알람 등록 -->
 	<insert id="insert">
 		<![CDATA[
 			insert into tbl_MyAlarm(alarmId,receiverId,callerId,content,checked) values(seq_myalarm.nextval,#{receiverId},#{callerId},#{content},'0')
 		]]>
 	</insert>
 	
+	<!--나의 알람 목록-->
 	<select id="getMyAlarm" resultType="com.jisung.domain.MyAlarm">
 		<![CDATA[
-			select * from tbl_myalarm where receiverid = #{receiverId} order by alarmid desc
+			select /*+INDEX_DESC(tbl_myalarm tbl_myalarm_pk)*/ * from tbl_myalarm where receiverid = #{receiverId}
 		]]>
 	</select>
 	
+	<!-- 새로운 알람 갯수 -->
 	<select id="countMyAlarm" resultType="int">
 		<![CDATA[
 			select count(checked) from tbl_myalarm where receiverid = #{receiverId} and checked = 0
 		]]>
 	</select>
 	
+	<!-- 알람 상태 변경 -->
 	<update id="updateChecked">
 		update tbl_myalarm set checked = '1' where receiverId = #{receiverId}
 	</update>	

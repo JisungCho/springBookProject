@@ -10,7 +10,7 @@
 		<result property="userName" column="username"/>
 		<result property="regDate" column="regdate"/>
 		<collection property="authList" resultMap="authMap">
-		</collection>
+		</collection>		
 	</resultMap>
 	
 	<resultMap type="com.jisung.domain.AuthVO" id="authMap">
@@ -26,28 +26,31 @@
 		LEFT OUTER JOIN tbl_member_auth auth 
 		ON mem.userid = auth.userid WHERE mem.userid = #{userid}
 	</select>
-	
+	<!-- 회원 저장 -->
 	<insert id="insert">
 		insert into tbl_member(userid,userpw,username) values (#{userid},#{userpw},#{userName})
 	</insert>
 	
+	<!-- 회원정보 수정 -->
 	<update id="update">
 		<choose>
+			<!-- 일반회원인 경우 -->
 			<when test="userpw != null">
 				update tbl_member set userpw = #{userpw} , username = #{userName} where userid = #{userid}			
 			</when>
+			<!-- 카카오회원인 경우 -->
 			<otherwise>
 				update tbl_member set username = #{userName} where userid = #{userid}		
 			</otherwise>
 		</choose>
 
 	</update>
-	
+	<!-- 아이디 중복 검사 -->
 	<select id="checkId" resultType="int">
 		SELECT COUNT(*) FROM tbl_member
 		WHERE USERID = #{userid}
 	</select>
-	
+	<!-- 해당 롤을 가진 회원의 수 -->
 	<select id="memberCount" resultType="int">
 		select count(*) from tbl_member INNER join tbl_member_auth on tbl_member.userid = tbl_member_auth.userid where auth=#{role}
 	</select>

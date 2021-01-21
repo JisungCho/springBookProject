@@ -9,17 +9,19 @@
 			insert into tbl_Visitor(v_date) values(sysdate)
 		]]>
 	</insert>
+	<!-- 오늘 방문자수 -->
 	<select id="selectToday" resultType="int">
 		<![CDATA[
 			select count(*) from tbl_visitor where to_char( v_date, 'yyyymmdd' ) = to_char( sysdate, 'yyyymmdd')
 		]]>
 	</select>
+	<!--어제-->
 	<select id="selectYesterday" resultType="int">
 		<![CDATA[
 			select count(*) from tbl_visitor where to_char( v_date, 'yyyymmdd' ) = to_char( sysdate-1, 'yyyymmdd')
 		]]>
 	</select>
-	
+	<!-- 그제 -->
 	<select id="selectTwoDaysAgo" resultType="int">
 		<![CDATA[
 			select count(*) from tbl_visitor where to_char( v_date, 'yyyymmdd' ) = to_char( sysdate-2, 'yyyymmdd')

@@ -2,6 +2,7 @@ package com.jisung.domain;
 
 import lombok.Data;
 
+//카카오 정보
 @Data
 public class KaKaoProfile {
 	public Integer id;

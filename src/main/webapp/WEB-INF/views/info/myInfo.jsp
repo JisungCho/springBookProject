@@ -60,7 +60,7 @@
 		});
 		
 		$("#btn-info").on("click",function(e){ //회원수정 버튼 클릭
-			var userName = $("input[name='userName']").val()
+			var userName = $("input[name='userName']").val();
 			var role = "${member.authList[0].auth}";
 			var pw1 = $("#check1").val();
 			var pw2 = $("#check2").val();

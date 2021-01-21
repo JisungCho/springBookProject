@@ -1,14 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!-- 양식 다시 제출확인 처리 -->
-<%  
-response.setHeader("Cache-Control","no-store");  
-response.setHeader("Pragma","no-cache");  
-response.setDateHeader("Expires",0);  
-if (request.getProtocol().equals("HTTP/1.1"))
-        response.setHeader("Cache-Control", "no-cache");
-%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,8 +91,8 @@ if (request.getProtocol().equals("HTTP/1.1"))
 						}
 			});
 		}
-		//By 2021-01-06 , 01-07
-		//ajax를 통해서 유저아이디를 보내는데 해당아이디로 db를 조회해서 모든 checked를 true로 만들어줌
+
+		//알람 체크
 		function allChecked(){
 			
 			var receiverId = null;			
@@ -120,7 +112,8 @@ if (request.getProtocol().equals("HTTP/1.1"))
 			})
 		}
 		
-		$("#logout").on("click", function(e) { //토큰 전달과 로그아웃 처리
+		//토큰 전달과 로그아웃 처리
+		$("#logout").on("click", function(e) { 
 			e.preventDefault();
 			console.log("로그아웃");
 			alert("로그아웃 되었습니다");
@@ -131,7 +124,8 @@ if (request.getProtocol().equals("HTTP/1.1"))
 			$("#headerForm").submit();
 		});
 		
-		$("#myboard").on("click",function(e){ //내글 목록 클릭 시 토큰 전달과 내글 목록으로 이동
+		//내글 목록 클릭 시 토큰 전달과 내글 목록으로 이동
+		$("#myboard").on("click",function(e){ 
 			e.preventDefault();
 			var str ='<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">';
 			$("#headerForm").append(str);
@@ -140,7 +134,8 @@ if (request.getProtocol().equals("HTTP/1.1"))
 			$("#headerForm").submit();
 		});
 		
-		$("#myfavorite").on("click", function(e) { // 북마크 이동
+		// 북마크 이동
+		$("#myfavorite").on("click", function(e) { 
 			e.preventDefault();
 			console.log("즐겨찾기");
 			var str ='<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">';
@@ -150,7 +145,8 @@ if (request.getProtocol().equals("HTTP/1.1"))
 			$("#headerForm").submit();
 		});
 		
-		$("#myinfo").on("click", function(e) { // 내 정보 수정으로 이동
+		// 내 정보 수정으로 이동
+		$("#myinfo").on("click", function(e) { 
 			e.preventDefault();
 			console.log("내 정보");
 			var str ='<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">';
@@ -182,7 +178,8 @@ if (request.getProtocol().equals("HTTP/1.1"))
 			});
 			
 		}); 
-		
+ 		
+		//알림목록 보여줌
 		$("#news").popover({
 			  'title' : '알람목록', 
 			  'html' : true,

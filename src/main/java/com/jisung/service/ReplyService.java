@@ -17,5 +17,5 @@ public interface ReplyService {
 	
 	public List<ReplyVO> getList(Criteria cri,Long boardId); //목록 
 	
-	public ReplyPageDTO getListPage(Criteria cri,Long boardId);
+	public ReplyPageDTO getListPage(Criteria cri,Long boardId); //댓글 페이징
 }

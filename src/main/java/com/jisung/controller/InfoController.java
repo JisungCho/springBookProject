@@ -40,37 +40,41 @@ public class InfoController {
 	@Autowired
 	private InfoService infoService;
 	
+	//내 글 목록
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/myBoard")
 	public String myBoard(Criteria cri,Model model,Authentication auth) { //내 글목록
 		log.info("내 글 목록");
 		UserDetails userDetails = (UserDetails) auth.getPrincipal();
-		String userid = userDetails.getUsername(); //현재 로그인한 회원의 아이디
+		String userid = userDetails.getUsername(); //내 아이디
 		
-		log.info("총 게시물 수 : " + infoService.myTotal(userid)); // 로그인한 회원이 쓴 글의 갯수
+		log.info("총 게시물 수 : " + infoService.myTotal(userid)); // 내가 작성한 게시물 수  
 
 		List<BoardVO> myList = infoService.list(cri, userid); // 글쓴 목록 가져옴
 		log.info("게시물 : "+myList);
 		
-		model.addAttribute("list", myList);
+		model.addAttribute("list", myList); //내가 쓴글 목록
 		model.addAttribute("pageMaker", new PageDTO(cri, infoService.myTotal(userid)));
 		return "/info/myBoard";
 	}
 	
-	
+	//북마크 설정
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/myFavorite")
-	public void myFavorite(Criteria cri,Model model,Authentication auth) { // 내 북마크
+	public void myFavorite(Criteria cri,Model model,Authentication auth) { 
 		log.info("북마크");
 		log.info("cri : "+cri);
 		UserDetails userDetails = (UserDetails) auth.getPrincipal();
-		String userid = userDetails.getUsername(); //현재 회원
-		List<FavoriteVO> books = infoService.bookList(cri,userid); //현재 회원의 북마크 목록
+		String userid = userDetails.getUsername(); //현재 로그인한 회원의 아이디
+		
+		List<FavoriteVO> books = infoService.bookList(cri,userid); //나의 북마크 목록
+		//내 아이디 , 북마크 목록 , 페이지메이커를 전달
 		model.addAttribute("userid", userid);
 		model.addAttribute("books", books);
 		model.addAttribute("pageMaker", new PageDTO(cri, infoService.bookTotal(userid)));
 	}
 	
+	//내 정보 보기
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/myInfo")
 	public void myFavorite(Model model,Authentication auth) { // 내 정보수정
@@ -81,12 +85,12 @@ public class InfoController {
 		model.addAttribute("member",member); 
 	}
 	
+	//내 정보 수정
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping("/update")
 	@ResponseBody
 	public ResponseEntity<String> updateMyinfo(@RequestBody MemberVO vo) {
 		log.info("업데이트");
-		log.info(vo);
 		infoService.updateInfo(vo); //회원 정보 수정
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}

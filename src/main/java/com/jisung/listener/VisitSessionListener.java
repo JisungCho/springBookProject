@@ -12,6 +12,8 @@ import com.jisung.service.VisitorService;
 
 import lombok.extern.log4j.Log4j;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+//리스너
 @WebListener
 @Log4j
 public class VisitSessionListener extends HttpSessionEventPublisher {
@@ -33,6 +35,7 @@ public class VisitSessionListener extends HttpSessionEventPublisher {
 		
 	}
 	
+	//weblistner는 의존성 주입전에 로드되므로 autowired를 사용하면 안되고 밑에처럼 직접 넣어줘야한다.
 	private VisitorService getVisitorService(HttpSessionEvent se) {
 		    WebApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(se.getSession().getServletContext());
 		    return (VisitorService) context.getBean("visitorServiceImpl");

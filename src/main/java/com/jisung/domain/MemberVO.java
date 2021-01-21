@@ -12,5 +12,5 @@ public class MemberVO {
 	private String userName;
 	private Date regDate;
 	
-	private List<AuthVO> authList;
+	private List<AuthVO> authList; //권한
 }

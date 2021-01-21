@@ -14,6 +14,7 @@
 		</div>
 		<input type='hidden' name="${_csrf.parameterName}" value="${_csrf.token}">
 		<button id="btn-login" class="btn btn-primary">로그인</button>
+		<!-- 카카오 로그인 -->
 		<a href="https://kauth.kakao.com/oauth/authorize?client_id=61047743b1338b7db2c2102e0a34b29c&redirect_uri=http://localhost:8090/kakao&response_type=code"><img height="38px" src="../resources/img/kakao_login_button.png"></a>
 	</form>
 </div>

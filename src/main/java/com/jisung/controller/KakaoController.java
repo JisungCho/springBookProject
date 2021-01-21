@@ -45,15 +45,18 @@ public class KakaoController {
 	@Autowired
 	MyAlarmService myAlarmService;
 	
+	//비밀번호 , 비밀번호를 바꾸면 안됨
 	String tempPwd = "1234";
 	String userid;
 	
+	//스프링 시큐리티가 동작하기 위해서는 AuthenticationManager라는 존재 필요
 	@Autowired
 	@Qualifier("authenticationManager")
 	private AuthenticationManager authenticationManager;
 	
 	@GetMapping("/kakao")
 	public String home(String code,MemberVO member,AuthVO auth,HttpServletRequest request){
+		
 		//#############################토큰요청
 		//여기서 POST 방식으로 key-value타입의 데이터를 요청 (카카오쪽으로)
 		//이때 RestTemplate 라이브러리 사용
@@ -62,11 +65,14 @@ public class KakaoController {
 		HttpHeaders headers = new HttpHeaders();
 		//내가 보낼 데이터가 key=value데이터임을 알려줌
 		headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-				//HttpBody 오브젝트 생성
+		
+		//HttpBody 오브젝트 생성
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add("grant_type", "authorization_code");
 		params.add("client_id", "61047743b1338b7db2c2102e0a34b29c");
+		//인가 코드가 리다이렉트된 URI
 		params.add("redirect_uri", "http://localhost:8090/kakao");
+		//인가 코드 받기 요청으로 얻은 인가 코드
 		params.add("code", code);
 					
 		//HttpHeader 와 HttpBody를 하나의 오브젝트에 담기
@@ -83,12 +89,16 @@ public class KakaoController {
 		// Gson , Json Simple , ObjectMapper
 		ObjectMapper objectMapper = new ObjectMapper();
 		OAuthToken oauthToken = null;
+		
+		//readValue => 첫번째 인자를 두번째 타입으로 변환한다.
+		//json -> java object로 변환
 		try {
 			oauthToken =  objectMapper.readValue(response.getBody(), OAuthToken.class);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//가져온 엑세스 토큰
 		System.out.println("카카오 엑세스 토큰 : "+oauthToken.getAccess_token());
 		
 		//##############################토큰을 이용한 정보 요청
@@ -115,6 +125,8 @@ public class KakaoController {
 		
 		ObjectMapper objectMapper2 = new ObjectMapper();
 		KaKaoProfile kaKaoProfile = null;
+		
+		//json -> java object로 변환
 		try {
 				kaKaoProfile = objectMapper2.readValue(response2.getBody(), KaKaoProfile.class);
 		} catch (IOException e) {
@@ -126,14 +138,12 @@ public class KakaoController {
 		
 		log.info("유저네임 : "+kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId());
 		log.info("블로그 서버 이메일 "+kaKaoProfile.getKakao_account().getEmail());
-		//임시패스워드
-		//UUID란 -> 중복되지 않는 어떤 특정 값을 만들어내는 알고리즘
-		//UUID garbagePassword = UUID.randomUUID();
 		log.info("블로그서버 패스워드 : "+tempPwd);
 		
+		//중복확인
 		boolean result = memberService.checkId(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId());
 		
-		if(result) { //중복 안된경우
+		if(result) { //중복 안된경우 회원가입 처리
 			member.setUserid(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId());
 			member.setUserName(kaKaoProfile.getKakao_account().getProfile().nickname);
 			member.setUserpw(tempPwd);
@@ -147,14 +157,15 @@ public class KakaoController {
 		
 		System.out.println("자동 로그인을 진행합니다.");
 		//로그인처리
+		//인증처리
 		Authentication authentication 	= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId(), tempPwd));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		//로그인한 회원에게 새로운 알림이 있는지 확인
 		HttpSession session = request.getSession();
+		//새로운 알람의 갯수확인
 		int count = myAlarmService.countMyAlarm(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId());
-	
-		if(myAlarmService.countMyAlarm(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId()) > 0) {
+		if(count > 0) {
 			log.info("알람 있음");
 			session.setAttribute("count",count);
 		}else {

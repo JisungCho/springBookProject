@@ -35,14 +35,12 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		List<String> roleNames = new ArrayList<>();
 		
-        //사용자가 가진 모든권한을 가져와서 roleNames에 넣어줌
+        //사용자가 가진 role을 가져옴
 		authentication.getAuthorities().forEach(authority -> {
 			roleNames.add(authority.getAuthority());
 		});
 		
 		log.warn("ROLE NAMES: "+roleNames);
-		
-		System.out.println("유저이름:"+authentication.getName());
 		
 		//만약에 ADMIN 계정이라면
 		if(roleNames.contains("ROLE_ADMIN")) {
@@ -58,7 +56,6 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		//TBL_ALARM에서 checked가 false가 하나라도 있으면 session에 저장
 		
 		//해당회원의 알람 목록
-		
 		HttpSession session = request.getSession();
 		
 		//로그인한 회원에게 새로운 알림이 있는지 확인

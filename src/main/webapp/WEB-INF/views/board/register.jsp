@@ -30,6 +30,7 @@
 			<button type="button" id="btn-search" class="btn btn-success">도서검색</button>
 			<br/>
 			<br/>
+			
 			<!-- 비어있거나 책 목록이 있거나 -->
 			<div id="selectBook">
 			
@@ -56,11 +57,13 @@
 	$(document).ready(function(e){
 		var formObj = $("form");
 		
+		//도서검색 페이지로 이동
 		$("#btn-search").on("click", function(e) {
 			window.open('/board/bookSearch','window_name','width=600,height=500,location=no,status=no,scrollbars=yes');
 		});
 		
-		$("#btn-write").on("click",function(e){  //글쓰기 버튼 클릭 시 글쓰기 작업 수행
+		//글 등록
+		$("#btn-write").on("click",function(e){
 			
 			e.preventDefault(); 
 			//getReturnValue를 통해 선택한 책 정보 태그를 추가하고 

@@ -94,12 +94,13 @@
 			
 			//게시물 상세 조회시 작동
 			var actionForm = $("#actionForm");
-			//등록한 게시물의 번호
+			//결과 success or 게시글번호
 			var result = '<c:out value="${result}"/>';
 			checkModal(result);
 			history.replaceState({}, null, null);
 			
 			//등록된 게시물의 번호를 모달창으로 보여줌
+			//아니면 그냥 show해줌
 			function checkModal(result) {
 				if (result === '' || history.state) {
 					return;

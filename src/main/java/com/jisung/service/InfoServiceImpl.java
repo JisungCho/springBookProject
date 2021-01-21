@@ -62,7 +62,7 @@ public class InfoServiceImpl implements InfoService{
 	@Override
 	public int updateInfo(MemberVO vo) {
 		log.info("내 정보 업데이트"); 
-		if(vo.getUserpw() != null) { //일반 회원인경우
+		if(vo.getUserpw() != null) { //일반 회원인경우(카카오회원은 NULL이 넘어옴)
 			log.info("일반회원");
 			BCryptPasswordEncoder pwe = new BCryptPasswordEncoder();
 			String pw = pwe.encode(vo.getUserpw());

@@ -40,7 +40,7 @@
 		<result property="url" column="url" />
 	</resultMap>
 
-	<!-- 객체에  -->
+	<!-- 개발자가 POJO클래스에 직접 맵핑-->
 	<select id="get" resultMap="boardVO">
 		SELECT board.boardid , subject , content, writer, regdate , bookId , thumbnail , title, authors ,url
 		FROM tbl_board board
@@ -103,20 +103,22 @@
 		]]>
 	</select>
 	
+	<!-- 내가 쓴 게시물 수 구하기 -->
 	<select id="myTotal" resultType="int">
 		<![CDATA[ 
 			select count(*) from tbl_board where 
 			boardid > 0 and writer = #{userid}
 		]]>
 	</select>
-	
+	<!-- 업데이트 -->
 	<update id="update">
 		update tbl_board set subject = #{subject}, content = #{content}, writer = #{writer} where boardid = #{boardId}
 	</update>
-	
+	<!-- 삭제 -->
 	<delete id="delete">
 		delete from tbl_board where boardid = #{boardId}
 	</delete>
+	
 	<!-- 날짜별 게시물 수 -->
 	<select id="selectToday" resultType="int">
 		<![CDATA[

@@ -13,6 +13,7 @@
 		<label for="content">내용</label>
 		<textarea class="form-control summernote" rows="8" name="content">${board.content }</textarea>
 	</div>
+	<!-- 책정보 -->
 	<div id="bookSearch" class="form-group">
 		<label for="content">책</label> <br/>
 		<div id="selectBook">
@@ -29,8 +30,8 @@
 								<a id="url" target="_blank" href="${board.book.url }">상세보기</a>
 							</h6>
 							<br>
-							<!-- 좋아요 버튼 -->
-							<!-- Admin은 좋아요 버튼 안나오게 설정 -->
+							<!-- 북마크 버튼 -->
+							<!-- Admin은 북마크 버튼 안나오게 설정 -->
 							<sec:authorize access="!hasRole('ROLE_ADMIN')">
 								<div id="favoriteBox">
 									<c:choose>
@@ -80,7 +81,6 @@
 	</sec:authorize>
 	<button data-oper="close" class="btn btn-info">뒤로가기</button>
 	
-	<!--  -->
 	<form id='operForm' action="/board/modify" method="get">
 		<input type="hidden" id="boardId" name="boardId" value='<c:out value="${board.boardId }"></c:out>'> 
 		<input type="hidden" name="keyword" value='<c:out value="${cri.keyword }"></c:out>'> 
@@ -135,11 +135,11 @@
 			xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
 		});
 		
+		//서머노트
 		$('.summernote').summernote({
 			tabsize : 2,
 			height : 300
 		});
-		
 		$('.summernote').summernote('disable');
 		
 		
@@ -200,6 +200,7 @@
 			console.log("page : "+page);
 			
 			replyService.getList({boardId:boardId, page:page||1}, 
+			//콜백함수
 			//해당 게시글의 댓글 수, 해당 페이지의 댓글목록
 			function(replyCnt,list) {
 				if(page == -1){ //마지막 페이지로 이동
@@ -228,6 +229,7 @@
 			});
 		}
 		
+		//페이지번호 처리
 		function showReplyPage(replyCnt) { //댓글의 갯수가 파라미터로 옴
 			var endNum = Math.ceil(pageNum/10.0) * 10; //끝번호  1~10페이지는 10 
 			var startNum = endNum - 9; //시작번호
@@ -310,10 +312,7 @@
 						alert(result);
 						modal.find("input").val("");
 						modal.modal("hide");
-						//알람설정 2020-12-27
 						//알람 DB에 저장 
-						
-						
 						//만약에 현재로그인한 사람과 댓글을 다는 사람이 같으면 알람db에 저장하지 않음
 						if(replyer != receiverId){
 							var AlarmData = {

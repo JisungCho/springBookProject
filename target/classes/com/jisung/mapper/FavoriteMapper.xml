@@ -7,11 +7,12 @@
 		insert into tbl_favorite(favoriteId,userid,thumbnail,title,authors,url) values(seq_favorite.nextval,#{userid},#{thumbnail},#{title},#{authors},#{url})
 	</insert>
 	
+	<!-- 내 북마크 목록 -->
 	<select id="read" resultType="com.jisung.domain.FavoriteVO">
 		<![CDATA[
 			select favoriteid,thumbnail,title,authors,url 
 			FROM(
-			    SELECT /*+INDEX_ASC(tbl_favorite tbl_favorite_pk)*/ rownum rn,favoriteid,userid,thumbnail,title,authors,url
+			    SELECT /*+INDEX_DESC(tbl_favorite tbl_favorite_pk)*/ rownum rn,favoriteid,userid,thumbnail,title,authors,url
 				FROM tbl_favorite WHERE userid = #{userid} and rownum <= #{cri.pageNum} * #{cri.amount}
 			)
 			where rn > ((#{cri.pageNum}-1)*#{cri.amount})
@@ -19,7 +20,7 @@
 	</select>
 	
 	<!-- 같은 책이 있는지 중복확인 -->
-	<select id="prevent_dup" resultType="int">
+	<select id="prevent_dup" resultType="Long">
 		select count(*) from tbl_favorite where userid = #{userid} and url = #{url}
 	</select>
 	
@@ -28,11 +29,13 @@
 	</select>
 	
 	
+	<!-- 북마크 삭제 -->
 	<delete id="delete">
 		delete from tbl_favorite where favoriteid = #{favoriteId}
 	</delete>
 	
-	<select id="get" resultType="long">
+	<!--해당 유저가 찾고자하는 책의 favoriteid 가져오기-->
+	<select id="get" resultType="Long">
 		select favoriteId from tbl_favorite where userid = #{userid} and url = #{url}
 	</select>
 </mapper>

@@ -47,7 +47,7 @@ public class AlarmController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "/getAlarm",produces = "application/json;charset=UTF-8")
-	public @ResponseBody ResponseEntity<List<MyAlarm>> getAlarm(Authentication authentication) { // 들어온 댓글 생성
+	public ResponseEntity<List<MyAlarm>> getAlarm(Authentication authentication) { // 들어온 댓글 생성
 		log.info("알람목록 가져오기  ");
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal(); 
 		String receiverId = userDetails.getUsername();
@@ -60,7 +60,7 @@ public class AlarmController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping(value="/allChecked")
-	public @ResponseBody ResponseEntity<String> allChecked(Authentication authentication,HttpServletRequest request){
+	public ResponseEntity<String> allChecked(Authentication authentication,HttpServletRequest request){
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal(); 
 		String receiverId = userDetails.getUsername();
 		log.info("checked의 유저이름 : "+receiverId);
@@ -72,7 +72,7 @@ public class AlarmController {
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping(value = "/countAlarm",consumes = "application/json;charset=UTF-8",produces = "text/plain;charset=UTF-8" )
-	public @ResponseBody ResponseEntity<String> countAlarm(Authentication authentication,HttpServletRequest request){
+	public ResponseEntity<String> countAlarm(Authentication authentication,HttpServletRequest request){
 		UserDetails userDetails = (UserDetails) authentication.getPrincipal(); 
 		String receiverId = userDetails.getUsername();
 		log.info("조사할 countAlarm의 유저 이름: : "+receiverId);

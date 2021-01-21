@@ -3,6 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jisung.mapper.AuthMapper">
+	<!-- 권한 등록 -->
 	<insert id="insert">
 		insert into tbl_member_auth (userid,auth) values (#{userid},#{auth})
 	</insert>

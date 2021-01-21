@@ -4,9 +4,11 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jisung.mapper.BookMapper">
 	
+	<!-- 책 정보 등록 -->
 	<insert id="insert">
 		insert into tbl_book(bookid,boardid,thumbnail,title,authors,url) values(seq_book.nextval,#{boardId},#{thumbnail},#{title},#{authors},#{url})
 	</insert>
+	<!-- 업데이트 -->
 	<update id="update">
 		update tbl_book
 		set thumbnail = #{thumbnail},
@@ -15,7 +17,7 @@
 		url = #{url}
 		where bookid = #{bookId}
 	</update>
-	
+	<!-- 삭제 -->
 	<delete id="delete">
 		delete from tbl_book where boardid = #{boardId}
 	</delete>

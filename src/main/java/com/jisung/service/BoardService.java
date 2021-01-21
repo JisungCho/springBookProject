@@ -21,7 +21,7 @@ public interface BoardService {
 	public boolean favoriteRemove(FavoriteVO vo); //좋아요 제거
 	
 	//날짜별 게시물 수 
-	public int today();
-	public int yesterday();
-	public int twoDaysAgo();
+	public int today(); //오늘
+	public int yesterday(); //어제
+	public int twoDaysAgo(); //그제
 }

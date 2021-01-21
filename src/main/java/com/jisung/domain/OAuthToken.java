@@ -2,6 +2,7 @@ package com.jisung.domain;
 
 import lombok.Data;
 
+//카카오 토큰
 @Data
 public class OAuthToken {
 	private String  access_token;

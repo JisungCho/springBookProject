@@ -19,7 +19,8 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 public class EchoHandler extends TextWebSocketHandler {
-
+	
+	//로그인한 전체
 	List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
 	
 	//아이디는 고유한값 , 로그인한 유저목록
@@ -28,6 +29,7 @@ public class EchoHandler extends TextWebSocketHandler {
 	//웹소켓 email 가져오기
 	private String getEmail(WebSocketSession session) {
 		Map<String, Object> httpSession = session.getAttributes();
+		//현재 유저의 아이디 가져오기
 		Object principal = ((SecurityContext)httpSession.get("SPRING_SECURITY_CONTEXT")).getAuthentication().getPrincipal();
 		String userId = ((UserDetails)principal).getUsername();
 		if(userId == null) {
@@ -73,7 +75,7 @@ public class EchoHandler extends TextWebSocketHandler {
 		//msg가 비어있지 않으면
 		if(!StringUtils.isEmpty(msg)) {
 			String[] strs = msg.split(",");
-			
+			//메세지를 쪼갬
 			if(strs != null && strs.length == 4) {
 				String cmd = strs[0];
 				String receiverId = strs[1];
@@ -83,7 +85,7 @@ public class EchoHandler extends TextWebSocketHandler {
 				
 				WebSocketSession loginUser = userSession.get(receiverId);
 				
-				
+				//receiverId에 메세지를 보냄
 				if("reply".equals(cmd) && loginUser != null) {
 					TextMessage tmpMsg = new TextMessage(callerId + "님이 " + 
 										"<a type='external' href='/board/get?pageNumber=1&boardId="+boardId+"'>" + boardId + "</a> 번 게시글에 댓글을 남겼습니다.");

@@ -11,9 +11,10 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import lombok.extern.log4j.Log4j;
 
+//권한이 없는 사용자의 처리
 @Log4j
 public class CustomAccessDeniedHandler implements AccessDeniedHandler{
-
+	
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {

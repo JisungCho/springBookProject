@@ -23,6 +23,7 @@ import com.jisung.service.ReplyService;
 
 import lombok.extern.log4j.Log4j;
 
+//RESTful
 @RestController
 @RequestMapping("/reply/")
 @Log4j
@@ -41,6 +42,7 @@ public class ReplyController {
 	}
 	
 	//댓글 목록
+	//Json데이터 반환
 	@GetMapping(value = "/pages/{boardId}/{page}",produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public ResponseEntity<ReplyPageDTO> getList(@PathVariable("boardId") Long boardId,@PathVariable("page") int page){
 		log.info("특정 게시물의 댓글 목록 확인 ");
