@@ -122,6 +122,7 @@
 			operForm.submit(); 
 		});
 		
+		//닫기버튼 클릭 시
 		$("button[data-oper='close']").on("click",function(e){
 			console.log("close");
 			operForm.attr("method","get")
