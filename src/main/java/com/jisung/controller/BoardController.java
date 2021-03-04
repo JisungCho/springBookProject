@@ -3,6 +3,7 @@ package com.jisung.controller;
 import java.awt.print.Book;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.jisung.domain.BoardVO;
@@ -78,7 +81,7 @@ public class BoardController {
 
 	}
 	
-	//게시물 상세조회 view로 이동
+	//게시물 상세조회 페이지로 이동
 	@GetMapping("/get")
 	public void get(Long boardId, Model model, @ModelAttribute("cri") Criteria cri,Authentication auth) { //게시물 상세조회
 		
@@ -87,22 +90,21 @@ public class BoardController {
 		
 		model.addAttribute("board", vo); // board란 이름으로 해당 게시물정보를 전달
 		
-		//좋아요 눌림 체크
+		//현재로그인이 되어있거나 권한이 Admin이 아니면
 		if(auth != null && auth.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) { 
-			//현재로그인이 되어있거나 권한이 Admin이 아니면
 			log.info("권한 있음");
 			
-			//해당 책의 url(카카오에서 제공해주는 책 상세정보)
+			//해당 책의 url
 			String url = vo.getBook().getUrl();
 			UserDetails userDetails = (UserDetails) auth.getPrincipal(); // 현재 로그인한 유저
 			String userid = userDetails.getUsername(); //로그인한 유저의 아이디
+			//좋아요 눌림 체크
 			boolean result = boardService.favoriteCheck(userid, url); // 같은 책이 있다면 true 없다면 false
 			model.addAttribute("favorite", result); 
-		}else { // 로그인이 안되어있는 상태라면 무조건 false
+		}else { // 로그인이 안되어있는 상태라면 무조건 북마크 설정 안되어있음
 			log.info("권한 없음");
 			model.addAttribute("favorite", false);
 		}
-		
 	}
 	
 	//수정 view

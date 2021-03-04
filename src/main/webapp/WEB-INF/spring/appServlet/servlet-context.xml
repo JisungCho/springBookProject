@@ -26,6 +26,8 @@
 	<!-- websocket handler -->
 	<beans:bean	id="echoHandler" class="com.jisung.handler.EchoHandler"/>
 	<websocket:handlers>
+		<!-- 웹소켓 클라이언트가 '/echo' 로 접속하면 -->
+		<!-- echoHandler라는 bean으로 처리하겠다는 것-->
 		<websocket:mapping handler="echoHandler" path="/echo"/>
 		<!-- (interceptor는 http통신에서 request, response를 가로채는 역할을 한다.) Httpsession에 있는 값을 가로채서 WebSocketSession에 똑같이 넣어주는 역할을 한다. -->
 		<websocket:handshake-interceptors>

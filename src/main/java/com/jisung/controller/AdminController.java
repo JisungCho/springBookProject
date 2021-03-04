@@ -52,7 +52,7 @@ public class AdminController {
 		model.addAttribute("w_yesterday", boardService.yesterday());
 		model.addAttribute("w_twoDaysAgo", boardService.twoDaysAgo()); 
 		
-		return "/admin/test";
+		return "/admin/adMain";
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')") 

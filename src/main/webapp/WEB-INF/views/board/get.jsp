@@ -170,7 +170,7 @@
 		function decodeHTMLEntities(text) { 
 			  var textArea = document.createElement('textarea');
 			  textArea.innerHTML = text;
-			  return textArea.value;
+			  return textArea.value; 
 		}
 		
 		var replyer = null;	
@@ -298,11 +298,14 @@
 		
 		//댓글 등록 버튼 클릭시
 		modalRegisterBtn.on("click", function() {
-			//댓글 등록자
+			//댓글작성자
 			var callerId = modalInputReplyer.val();
+			//댓글 알림 받는 사람
 			var receiverId = "${board.writer }";
+			//알림 내용
 			var content = callerId + "님이 <a type='external' href='/board/get?pageNumber=1&boardId="+boardId+"'>" + boardId + "</a>번 글에 댓글을 달았습니다.";
 			
+			//댓글,댓글작성자,게시물번호
 			var data = {
 					reply:modalInputReply.val(),
 					replyer:modalInputReplyer.val(),
@@ -320,16 +323,17 @@
 									callerId : callerId,
 									content : content
 							};
+							//알람 저장
 							$.ajax({
 								type : 'post',
 								url : '/alarm/saveAlarm',
 								data : JSON.stringify(AlarmData),
 								contentType: "application/json; charset=utf-8",
-								dataType : 'text',
 								success : function(data){
 									if(socket){
 										let socketMsg = "reply," +receiverId  +","+ callerId +","+boardId;
 										console.log("msg : " + socketMsg);
+										//EchoHandler에  전송
 										socket.send(socketMsg);
 									}
 						 

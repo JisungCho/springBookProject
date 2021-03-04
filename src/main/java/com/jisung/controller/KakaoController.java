@@ -159,6 +159,7 @@ public class KakaoController {
 		//로그인처리
 		//인증처리
 		Authentication authentication 	= authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(kaKaoProfile.getKakao_account().getEmail()+"_"+kaKaoProfile.getId(), tempPwd));
+		// 실제 SecurityContext 에 authentication 정보를 등록한다.
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		//로그인한 회원에게 새로운 알림이 있는지 확인

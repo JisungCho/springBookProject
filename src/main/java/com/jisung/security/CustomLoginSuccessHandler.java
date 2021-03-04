@@ -55,12 +55,10 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler{
 		//2.해당회원의 이름으로 checked가 false가 있는지 확인
 		//TBL_ALARM에서 checked가 false가 하나라도 있으면 session에 저장
 		
-		//해당회원의 알람 목록
 		HttpSession session = request.getSession();
 		
 		//로그인한 회원에게 새로운 알림이 있는지 확인
 		int count = myAlarmService.countMyAlarm(authentication.getName());
-		
 		if(myAlarmService.countMyAlarm(authentication.getName()) > 0) {
 			log.info("알람 있음");
 			session.setAttribute("count", count);

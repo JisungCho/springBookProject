@@ -96,7 +96,7 @@ public class BoardServiceImpl implements BoardService {
 	public boolean favoriteCheck(String userid, String url) {
 		log.info("좋아요 체크");
 		
-		//현재 로그인한 유저아이디로 해당 책 url을 가지고 좋아요를 체크한 적이 있는지 확인
+		//현재 로그인한 유저아이디와 해당 책 url을 가지고 좋아요를 체크한 적이 있는지 확인
 		Long count = favoriteMapper.prevent_dup(userid, url);
 		
 		if(count > 0) { // 좋아요를 누른 상태이면

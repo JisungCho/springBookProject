@@ -40,7 +40,7 @@ public class AlarmController {
 	@PostMapping(value = "/saveAlarm",consumes = "application/json",produces = "text/plain;charset=UTF-8")
 	public ResponseEntity<String> insertAlarm(@RequestBody MyAlarm myAlarm) { // 들어온 댓글 생성
 		log.info("알람 등록  "+myAlarm);
-		//db등록
+		//알람 db에 저장
 		myAlarmService.insertMyAlarm(myAlarm);
 		return new ResponseEntity<String>(HttpStatus.OK);
 	}

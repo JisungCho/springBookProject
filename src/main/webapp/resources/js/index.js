@@ -19,19 +19,17 @@
     sock.onmessage = function(evt) {
 	 	var data = evt.data;
 	   	console.log("ReceivMessage : " + data + "\n");
-		
-		var receiverId = null;		
 
-
+		//알림의 갯수 가져오기
 		$.ajax({
 			url : '/alarm/countAlarm',
 			type : 'GET',
-			data :  receiverId,
 			contentType : "application/json; charset=utf-8",
 			dataType: 'text',
 			success : function(data) {
 				if(data == '0'){
 				}else{
+					//notification의 모양을 알림 갯수로 바꿔줌
 					$('#bell').attr("class","badge badge-danger");
 					$('#bell').text(data);
 				}
@@ -42,7 +40,7 @@
 	   	});
 		
 		// 모달 알림
-		$("#alarm-body").append(data);
+		$("#alarm-body").html(data);
 		$("#alarmModal").modal("show");
 	};
  	

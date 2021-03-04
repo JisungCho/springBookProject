@@ -23,7 +23,7 @@ public class EchoHandler extends TextWebSocketHandler {
 	//로그인한 전체
 	List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
 	
-	//아이디는 고유한값 , 로그인한 유저목록
+	//로그인한 유저목록(아이디는 고유한 값)
 	Map<String, WebSocketSession> userSession = new HashMap<String, WebSocketSession>();
 	
 	//웹소켓 email 가져오기
@@ -62,9 +62,9 @@ public class EchoHandler extends TextWebSocketHandler {
 	/*
 	 * session : 사용자(전송한 사용자)의 웹소켓 정보(HttpSession이 아님)
 	 * message : 사용자가 전송한 메세지 정보
-	 *			payload : 실제 보낸 내용
-	 *			byteCount : 보낸 메세지 크기(byte)
-	 *			last : 메세지 종료 여부
+	 * 				payload : 실제 보낸 내용
+	 * 				byteCount : 보낸 메세지 크기(byte)
+	 * 				last : 메세지 종료 여부
 	 */
 	//2020-12-30 : socket으로 보낸 메세지 처리
 	@Override
@@ -84,8 +84,9 @@ public class EchoHandler extends TextWebSocketHandler {
 				log.info(cmd+","+receiverId+","+callerId+","+boardId);
 				
 				WebSocketSession loginUser = userSession.get(receiverId);
+				log.info("loginUser : "+loginUser);
 				
-				//receiverId에 메세지를 보냄
+				//명령이 reply이고 현재 로그인한 아이디중에 receiverId가 있는지
 				if("reply".equals(cmd) && loginUser != null) {
 					TextMessage tmpMsg = new TextMessage(callerId + "님이 " + 
 										"<a type='external' href='/board/get?pageNumber=1&boardId="+boardId+"'>" + boardId + "</a> 번 게시글에 댓글을 남겼습니다.");

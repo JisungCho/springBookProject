@@ -5,6 +5,11 @@
 <html lang="en">
 <head>
 <title>메인 페이지</title>
+<!-- 뒤로가기 방지 -->
+<meta http-equiv="Cache-Control" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -92,7 +97,7 @@
 			});
 		}
 
-		//알람 체크
+		//알람 확인 체크
 		function allChecked(){
 			
 			var receiverId = null;			
@@ -159,6 +164,7 @@
  		//notification클릭
 		$("#news").click(function(e) {
 			e.preventDefault();
+			alarm = "";
 			
 			//현재페이지에서 notification모양을 바꿔줌
 			$("#bell").empty();
@@ -169,6 +175,7 @@
 			
 			//알람 목록을 가져옴
 			getAlarm(function(list) {
+				console.log(list);
 		  		for (var i = 0; i < list.length; i++) {
  					alarm += "<li data-alert_id='" + list[i].alarmId+"' class='alert_li'>";
 					alarm +=  list[i].content;
@@ -176,7 +183,6 @@
 				}
 		  		$(".list-unstyled").html(alarm);
 			});
-			
 		}); 
  		
 		//알림목록 보여줌
@@ -220,6 +226,7 @@
             	<a class="btn btn-sm btn-outline-secondary" href="/customLogin">로그인</a>
 			</sec:authorize>
 			<sec:authorize access="isAuthenticated()">
+				<small class="p-4 text-muted"><sec:authentication property="principal.username"/></small>
 				<a id="logout" class="btn btn-sm btn-outline-secondary" href="#">로그아웃</a>
 			</sec:authorize>            
           </div>

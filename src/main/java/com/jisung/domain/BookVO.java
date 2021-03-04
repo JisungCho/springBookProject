@@ -13,5 +13,5 @@ public class BookVO {
 	private String authors;
 	private String url;
 	
-	private List<FavoriteVO> favorite; //북마크 목록
+	//private List<FavoriteVO> favorite; //북마크 목록
 }
